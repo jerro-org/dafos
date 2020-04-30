@@ -1,0 +1,173 @@
+* Rate (
+    | Rational64
+    | None
+)
+
+* Mixer {
+    ? n m
+    smpRate : RateOf : smp
+    par {
+        smp {
+            RateHere
+        }
+    }
+}
+
+* Bst (
+    | Empty
+    | Node (
+        * value : Num
+        * left : Bst
+        * right : Bst
+    )
+)
+
+{
+   bst : Bst : (
+        7 (
+            3 (
+                2 5 (
+                    4 6
+                )
+            )
+            9 (
+                8 10
+            )
+        )
+    )
+
+    bst : Bst : 7 (3 (2 5 (4 6)) 9 (8 10))
+}
+
+? in : Bst
+[
+    : Match : in Empty
+    ...
+|
+    : Match : in Node
+    ... in.value
+|
+    ...
+]
+
+* ShapeId
+* CircleId : ShapeId
+* RectangleId : ShapeId
+* PolygonId : ShapeId
+
+* ShapeId (
+    | CircleId
+    | RectangleId
+)
+
+* Email { address : String}
+* EmailAddress : String
+email : Email : "jerro@jerro.ch"
+emails : #Email : "jerro@jerro.ch" email
+
+* ToEmailAddress {
+    ? s : String
+    [
+        : Regex.Match : s "^\S+@\S+\.\S+$"
+        ! email : Error : "No Match"
+    |
+        ! email : Email : s
+    ]
+}
+
+emailOk : ToMailAddress : "jerro@jerro.ch"
+emailNone : ToEmailAddress : "Jerro"
+
+* ToEmailAddress {
+    ? s : String
+    error [
+        : Regex.Match : s "^\S+@\S+\.\S+$"
+        ! Error : "No Match"
+    email |
+        ! Email : s
+    ]
+}
+
+{
+    ToEmailAddress.s : "jerro@jerro.ch"
+    [
+        print ToEmailAddress?error
+    |
+        print ToEmailAddress?email
+    ]
+}
+
+error email : ToMailAddress : "jerro@jerro.ch"
+[
+    ... error ...
+|
+    ... email ...
+]
+
+* Square {
+    ? x
+    ! x*x
+}
+
+* Sum {
+    ? x : _*Num
+    ! Fold : x 0 Add
+}
+
+* SomeObj {
+    Func : (Sum : Square)
+}
+
+* AddingCalculator {
+    ? in
+    ! in+1
+}
+
+* LoggingCalculator {
+    ? in Func
+    log : "input: ",in
+    out : Func : in
+    log : "output: ",out
+    ! out
+}
+
+* Add42 : (NumAdd : 42)
+
+* Add42 : NumAdd {
+    b : 42
+}
+
+a : 1 2 4 50 5423 3403 24 0
+-- i : 0
+{
+    b@i : (a@i + a@(i+1)) / 2
+    -- i : i + 1
+}
+
+a : 1 2 4 50 5423 3403 24 0
+n : Size : a
+b : (a@0..(n-2) + a@1..(n-1)) / 2
+
+* List (
+    ? T
+    | Start (
+        *next : List
+    )
+    | Node (
+        * val : T
+        * next : List
+    )
+)
+
+-- Recursive List
+list : (List:Int32).Start : (1 (2 (3 list)))
+list : Start : 1 2 3 list
+
+* Graph (
+    * List ()
+    | Empty
+    | Node (
+        * val : String
+        * others : List
+    )
+)
