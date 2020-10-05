@@ -63,7 +63,7 @@
 * Email { address : String}
 * EmailAddress : String
 email : Email : "jerro@jerro.ch"
-emails : #Email : "jerro@jerro.ch" email
+emails : #Email : "dan@jerro.ch" email
 
 * ToEmailAddress {
     ? s : String
@@ -150,17 +150,70 @@ b : (a@0..(n-2) + a@1..(n-1)) / 2
 
 * List (
     ? T
-    | Start (
-        *next : List
-    )
+    -- Stands for Union Cases
+    | End
+    | Node : {
+        * val : T
+        * next : List : T -- a cycle
+    }
+)
+
+* Cycle (
+    ? T
+    | Node : {
+        * val : T
+        * next : Node
+    }
+)
+-- Example
+cycle : cycle:Int32 : (1 (2 (3 cycle)))
+
+* InsertAfter {
+    ?T
+    ?c : List:T
+    ?e : T
+    { c : Node & e < c.val
+        co : List:T: cr.val : cr.next
+    }
+    i.next : e i.next
+    ! c : Cycle:T
+}
+
+* List (
+    ?T
+    | Empty
     | Node (
         * val : T
-        * next : List
+        * next : List:T
     )
 )
 
+
+* BTree (
+    ?T
+    | Empty
+    | Node (
+        * val : T
+        * left : BTree:T
+        * right : BTree:T
+    )
+)
+
+l : (List:Int32) : 1 2 3 4
+
+l2 : 0 l
+
+l3 : l 5
+
+{ l : Node
+| l.val <
+    o : 
+
+
+}
+
 -- Recursive List
-list : (List:Int32).Start : (1 (2 (3 list)))
+list : (SList:Int32).Start : (1 (2 (3 list)))
 list : Start : 1 2 3 list
 
 * Graph (
@@ -170,4 +223,8 @@ list : Start : 1 2 3 list
         * val : String
         * others : List
     )
+)
+
+* Ref (
+    ? T
 )
