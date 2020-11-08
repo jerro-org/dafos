@@ -229,32 +229,7 @@ list : Start : 1 2 3 list
     ? T
 )
 
-* Timeline
 
-* File {
-    ? Element : Obj
-    Reader.setPos [  ' Reader is a type, hence starts with capital letter, ".setPos" is optional
-        ? pos : Position
-    ]
-    {
-        Reader.read [
-            ! out : Element
-        ]
-        write [
-            ? in : Element
-        ]
-    }
-    clear [
-    ]
-}
-
-* FileRenderer {
-    . file : File : Audio.Sample
-    file.write : sin : 0.0 .. 2*Math.pi .. 0.02*Math.pi
-    _firstReader : file.Reader
-    _firstReader.setPos 10
-    _secondReader : file.Reader
-    _secondReader.setPos 20
-  
+* Model : Domain {
 
 }

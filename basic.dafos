@@ -1,0 +1,22 @@
+* Domain {
+    ' version update
+
+    . active {
+        ' active
+    }
+}
+
+* EventStore : Domain {
+}
+
+* Type : Domain {
+    [
+        ? newGroup
+        ! handle
+    ]
+    [
+        ? newLoop
+        ! handle
+    ]
+    ! events
+}
