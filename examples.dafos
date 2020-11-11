@@ -232,24 +232,30 @@ list : Start : 1 2 3 list
 * Timeline
 
 * File {
-    ? Element : Obj
-    Reader.setPos [  ' Reader is a type, hence starts with capital letter, ".setPos" is optional
-        ? pos : Position
+    ?Element : Obj
+    Reader.setPos [  -- Reader is a type, hence starts with capital letter, ".setPos" is optional
+        ?pos : Position
     ]
     {
         Reader.read [
-            ! out : Element
+            !out : Element
         ]
         write [
-            ? in : Element
+            ?in : Element
         ]
     }
     clear [
     ]
 }
 
+*AudioFile : File:Audio.Sample
+-- This implicitly makes AudioFile{*Element} from File{?Element}
+Element : AudioFile.Element
+-- 
+
+--  Free file reader use:
 * FileRenderer {
-    . file : File : Audio.Sample
+    file_ : File : Audio.Sample
     file.write : sin : 0.0 .. 2*Math.pi .. 0.02*Math.pi
     _firstReader : file.Reader
     _firstReader.setPos 10
@@ -258,3 +264,26 @@ list : Start : 1 2 3 list
   
 
 }
+
+
+-- File reader signature:
+*File.Reader {
+    *setPos [
+        ?pos : Position
+    ]
+    *read {
+        !out : Element
+
+    }
+}
+
+-- generic module
+*Sp (
+    ?Sample
+)
+
+*Audio (
+    *Sample : Float32
+    *Sp : Sp:Sample  -- specific Sp module
+
+) 
