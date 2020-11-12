@@ -181,10 +181,10 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 * List (
     ?T
-    | Empty
-    | Node (
-        * val : T
-        * next : List:T
+    |Empty
+    |Node (
+        *val : T
+        *next : List:T
     )
 )
 
@@ -283,7 +283,7 @@ Element : AudioFile.Element
 )
 
 *Audio (
-    *Sample : Float32
+    *Sample : (Float32)  -- Only compatible with Sample. Use 'fl : Float32 : smp' to get the float 
     *Sp : Sp:Sample  -- specific Sp module
 
-) 
+)
