@@ -153,8 +153,8 @@ b : (a@0..(n-2) + a@1..(n-1)) / 2
     -- Stands for Union Cases
     | End
     | Node : {
-        * val : T
-        * next : List : T -- a cycle
+        *val : T
+        *next : List : T -- a cycle
     }
 )
 
@@ -183,7 +183,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
     ?T
     |Empty
     |Node (
-        *val : T
+        *val : T  -- T could be of Data or Object. '*' makes clear this is a definition and not an assignment
         *next : List:T
     )
 )
@@ -248,19 +248,16 @@ list : Start : 1 2 3 list
     ]
 }
 
-*AudioFile : File:Audio.Sample
--- This implicitly makes AudioFile{*Element} from File{?Element}
-Element : AudioFile.Element
--- 
+
 
 --  Free file reader use:
 * FileRenderer {
     file_ : File : Audio.Sample
     file.write : sin : 0.0 .. 2*Math.pi .. 0.02*Math.pi
-    _firstReader : file.Reader
-    _firstReader.setPos 10
-    _secondReader : file.Reader
-    _secondReader.setPos 20
+    .firstReader : file.Reader  -- '.' says that this is not a signal assignment but an oject instance definition.
+    firstReader.setPos 10
+    .secondReader : file.Reader
+    secondReader.setPos 20
   
 
 }
@@ -283,7 +280,23 @@ Element : AudioFile.Element
 )
 
 *Audio (
-    *Sample : (Float32)  -- Only compatible with Sample. Use 'fl : Float32 : smp' to get the float 
+    *Sample : Float32
     *Sp : Sp:Sample  -- specific Sp module
-
+    -- ...
 )
+
+*AudioFile : File:Audio.Sample
+
+
+* ExampleDomain {
+    ' version update
+    oldVersion : version
+    *version : $000a0101
+    .update [ oldVersion < version
+        counter : storedData.counter - 1  -- E.g. if old version starts counting at 1 and new version at 0.
+    ]
+
+    *active {
+        ' active
+    }
+}

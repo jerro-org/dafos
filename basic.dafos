@@ -1,22 +1,71 @@
-* Domain {
-    ' version update
+*OBJECT
+*DATA
 
-    . active {
+*BOOL ()
+*SET (
+    ?Accessor
+    *size
+    *Set {
+        ?bitNum
+    }
+)
+
+*NUM (
+    *numerator (
+        *size
+        *negative
+    )
+    *denominator (
+        *size
+    )
+    *exponent (
+        *size
+        *neg
+    )
+
+    *ADD+ {
+        ?a
+        ?b
+        !c
+    }
+)
+
+*INT : NUM (
+    denominator : 1
+    exponent : 0
+)
+
+*INT32 : INT (
+    numerator.size : 32
+)
+
+*STRING ()
+
+*DOMAIN {
+    *revision : Revision
+    .update [
+        ' version update
+        .storedData 
+    ]
+    *active {
         ' active
     }
 }
 
-* EventStore : Domain {
+--- Not built in. Implemented in library.
+* EventStore : DOMAIN {
 }
 
-* Type : Domain {
-    [
-        ? newGroup
-        ! handle
-    ]
-    [
-        ? newLoop
-        ! handle
-    ]
-    ! events
+* TYPE : DOMAIN {
+    *active {
+        newGroup [
+            ? newGroup
+            ! handle
+        ]
+        [
+            ? newLoop
+            ! handle
+        ]
+        ! events        
+    }
 }
