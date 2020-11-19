@@ -1,0 +1,4 @@
+InstanceId = LowerLetter(Letter|Digit);
+TypeId = UpperLetter(Letter|Digit);
+AnyId = '_'(Letter|Digit);
+IgnoreId = '_';

@@ -1,0 +1,36 @@
+*SYSTEM (
+
+
+*DOMAIN {
+    *revision : Revision
+    .update [
+        ' version update
+        .storedData 
+    ]
+    *active {
+        ' active
+    }
+}
+
+--- Not built in. Implemented in library.
+* EventStore : DOMAIN {
+}
+---
+
+* TYPE : DOMAIN {
+    *active {
+        newGroup [
+            ? newGroup
+            ! handle
+        ]
+        [
+            ? newLoop
+            ! handle
+        ]
+        ! events        
+    }
+}
+
+*D
+
+)
