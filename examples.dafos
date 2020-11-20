@@ -179,15 +179,64 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
     ! c : Cycle:T
 }
 
-* List (
+* Option (
     ?T
-    |Empty
-    |Node (
-        *val : T  -- T could be of Data or Object. '*' makes clear this is a definition and not an assignment
-        *next : List:T
-    )
+    |None
+    |T
 )
 
+* List (
+    ?T
+    ''( could have additional global fields to cache some values or like
+    *len : UINT
+    )''
+    |Empty
+    |Node (
+        *_val : T  -- T could be of Data or Object or Type. '*' makes clear this is a definition and not an assignment. '_' because could start with lower or upper case letter.
+        *next : List:T
+    )
+
+    '' non-mutating functions
+
+    *Map {
+        ?in : List:T
+        ?Function {
+            ?in : T
+            !out : T
+        }
+        .out : List:T  '' : Empty '' explicitly saying it is empty is optional
+        .cur : out
+        { in : Node
+            cur : Node : Function : in._val
+            .cur : cur.next
+        }
+        !out
+    }
+
+    *Prepend {  '' note that Prepend does not mutate the input list
+        ?element : T
+        ?list : List:T
+        !out : Node element list
+    }
+
+    '' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
+    *Append {
+        ?list : List:T
+        ?element : T
+        .cur : list
+        { .cur : Node 
+            .cur : cur.next
+        }
+        cur : Node element
+    }
+)
+
+*ListMapExample {
+    list : List:Float32 : 0 1 2 3 4 5
+    newList : List.Map : list {
+        !newElement : ?element + 1
+    }
+}
 
 * BTree (
     ?T

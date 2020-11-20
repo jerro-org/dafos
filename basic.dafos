@@ -1,3 +1,8 @@
+*ANY (
+    *EQ=
+    *NEQ<>
+)
+
 *OBJ (
     *SIZE {
         ? object
@@ -11,7 +16,6 @@
 *BITS ()
 
 ' Type with special syntax
-
 *ARRAY# (
     ?size
     ?ElementType
@@ -25,74 +29,79 @@
         ?at
         ?array
     }
-    *LENGTH {
+    *LEN {
         ?array
-
     }
 )
 
- Example:
+''( Example:
+
 *Matrix3D : ARRAY : 3 (ARRAY 3 FLOAT32)
--- With special syntax:
+'' With special syntax:
 *Matrix3D : 3#3#FLOAT32
--- Access:
+'' Access:
 m : Matrix3D : (1 0 0) (0 1 0) (0 0 1)
 m@1@1 : 2  -- m becomes a new matrix
 m.ElementType
----
+
+*OpenArrayFunction {
+    ?arr : n#m#FLOAT32
+    i : 0..n {  ''
+        j : 0..m { 
+
+        }
+    }
+}
+)''
 
 
 *BOOL (
     |TRUE
     |FALSE
-    *AND&&
-    *OR||
+    *AND&& ()
+    *OR|| ()
 )
 
 *NUM (
-    .numerator (
-        .size
-        .negative
+    *numerator (
+        *size
+        *negative
     )
-    .denominator (
-        .size
+    *denominator (
+        *size
     )
-    .exponent (
+    *exponent (
         *size
         *neg
     )
 
-    .ADDWRAP+ {
+    *ADDWRAP+ {
         ?a
         ?b
         !c
     }
-    *ADDEXT++
+    *ADDEXT++ {
+        ?a
+        ?b
+        !c
+    }
     *DIVTRUNC/
     *DIVEXT//
     *REM\
     '' ...
 )
 
-*RANGE (
-    *fromIncl : NUM
-    *toExcl : NUM
-    *step : NUM
-)
-
 *SET (
-    *Accessor  '' Must have finite (small) number of possible values (Enumeration or Range)
-)
+    (
+        ?Accessor  '' Must have finite (small) number of possible values (Enumeration)
+    |
+        ?n : UINT
+    )
 
-*BITSET : SET : RANGE (  '' Shorter form could be: ... RANGE : 0 _ 1
-    *fromIncl : 0
-    *step : 1
+    AND*
+    OR+
+    XOR^
 )
-
-''( Example
-*BitN32 : RANGE : 0 32
-*Bitset32 : SET : BitN32
-)''
 
 *INT : NUM (
     .denominator : 1
@@ -103,4 +112,11 @@ m.ElementType
     .numerator (
         .size : 32
     )
+)
+
+*REF (
+    *GET {
+        ?_any : ANY
+        !ref : REF
+    }
 )
