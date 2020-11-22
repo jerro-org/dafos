@@ -280,24 +280,33 @@ list : Start : 1 2 3 list
 
 * Timeline
 
-* File {
+*File (
     ?Element : Obj
-    Reader.setPos [  -- Reader is a type, hence starts with capital letter, ".setPos" is optional
-        ?pos : Position
-    ]
     {
-        Reader.read [
-            !out : Element
-        ]
-        write [
-            ?in : Element
-        ]
+        *Reader.setPos (  '' Reader is a type, hence starts with capital letter. If there is a reader it must be set. So this is not optional --> ().
+            ?pos : Position : 0
+        )
+        {
+            *Reader.read [
+                !out : Element
+            ]
+            *write [
+                ?in : Element
+            ]
+        }
+        *clear [
+        ]        
     }
-    clear [
-    ]
+)
+
+''(
+*Reader {
+    *setPos ()
+    {
+        *read []
+    }
 }
-
-
+)''
 
 --  Free file reader use:
 * FileRenderer {

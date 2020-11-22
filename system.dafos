@@ -17,7 +17,7 @@
 }
 ---
 
-* LIBRARY : DOMAIN {
+* MODULE {
     *active {
         newGroup [
             ? newGroup
