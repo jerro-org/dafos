@@ -82,9 +82,8 @@ email : Email : "jerro@jerro.ch"
 emails : #Email : "dan@jerro.ch" email
 
 * ToEmailAddress {
-    ? s : String
-    [
-        : Regex.Match : s "^\S+@\S+\.\S+$"
+    ?s : String
+    [ Regex.Match : s "^\S+@\S+\.\S+$"
         ! email : Error : "No Match"
     |
         ! email : Email : s
@@ -98,18 +97,18 @@ emailNone : ToEmailAddress : "Jerro"
     ? s : String
     error [
         : Regex.Match : s "^\S+@\S+\.\S+$"
-        ! Error : "No Match"
+        !error : "No Match"
     email |
-        ! Email : s
+        !email : Email : s
     ]
 }
 
 {
     ToEmailAddress.s : "jerro@jerro.ch"
     [
-        print ToEmailAddress?error
+        print ToEmailAddress.error
     |
-        print ToEmailAddress?email
+        print ToEmailAddress.email
     ]
 }
 
@@ -264,6 +263,15 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
         * right : BTree:T
     )
 )
+
+*ArrayIteration {
+    ?arr : n#m#FLOAT32
+    { i : ITER : 0..n  ' Iterate range
+        { j : ITER : 0..m
+
+        }
+    }
+}
 
 l : (List:Int32) : 1 2 3 4
 
