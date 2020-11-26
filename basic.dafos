@@ -1,6 +1,7 @@
 *ANY (
-    *EQ=
-    *NEQ<>
+    *EQ= {}
+    *NEQ<> {}
+    *TOSTRING {}
 )
 
 *OBJ (
@@ -12,7 +13,7 @@
 *DATA
 *TYPE
 
-' compatible with all types
+' Unsafe: compatible with all types.
 *BITS ()
 
 ' Type with special syntax
@@ -24,18 +25,45 @@
         ?at
         !element
     }
-    *SET@ {
+    *SET@: {
         ?array
-        ?at
-        ?array
+        ?index
+        ?element
+        !array
+    }
+    *CONCAT, {
+        ?a
+        ?b
+        ?c
     }
     *LEN {
         ?array
     }
 )
 
-''( Example:
+*STRING (
+    *GET@ {
+        ?array
+        ?at
+        !element
+    }
+    *SET@: {
+        ?array
+        ?index
+        ?element
+        !array
+    }
+    *CONCAT, {
+        ?a
+        ?b
+        !c
+    }
+    *LEN { 
+        ?array
+    }
+)
 
+''( Example:
 *Matrix3D : ARRAY : 3 (ARRAY 3 FLOAT32)
 '' With special syntax:
 *Matrix3D : 3#3#FLOAT32
@@ -54,12 +82,12 @@ m.ElementType
 }
 )''
 
-
 *BOOL (
     |TRUE
     |FALSE
     *AND&& ()
     *OR|| ()
+    *XOR^^  ' Same as NEQ<> but less binding.
 )
 
 *NUM (
@@ -93,7 +121,7 @@ m.ElementType
 
 *SET (
     (
-        ?Accessor  '' Must have finite (small) number of possible values (Enumeration)
+        ?Accessor  ' Must have finite (small) number of possible values (Enumeration)
     |
         ?n : UINT
     )
@@ -137,17 +165,33 @@ m.ElementType
 }
 ---
 
-* MODULE : DOMAIN (
+*DIRECTORY : DOMAIN {
+
+}
+
+*TYPEDIRECTORY : DOMAIN
+*MODULE : DOMAIN (
+    *Group (
+        |Mandatory
+        |Optional
+        |Repeated
+        ' ...
+    )
     *active {
-        newGroup [
-            ? newGroup
-            ! handle
+        *insertGroup [
+            ?new : Group
+            ?after : Handle
+            !handle : Handle
         ]
-        [
-            ? newLoop
-            ! handle
-        ]
-        ! events        
+
+        *ToType {
+            ?compileOptions
+            !T : TYPE
+        }
+        *ToCompiledType {
+            !T : TYPE
+        }
+        ! update  '' Multiple views to the module can connect to updates        
     }
 )
 

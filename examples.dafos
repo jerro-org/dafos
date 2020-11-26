@@ -1,6 +1,16 @@
-* Rate (
-    | Rational64
-    | None
+' I do not like single case discriminated unions as they either do not force check or are unhandy.
+' If forced check is required, wrap type
+*Email ( 
+    .str : STRING
+    ' Define some functions to work with it: ...
+)
+' Or just alias:
+*Email : STRING
+
+' Discriminated union:
+*Rate (
+    |Constant : Rational64
+    |Variable
 )
 
 * Mixer {
@@ -22,21 +32,27 @@
     )
 )
 
+'(
+    7
+ 3     9
+2 5   8 10
+   6
+)'
 {
    bst : Bst : (
         7 (
             3 (
-                2 5 (
-                    4 6
+                2 (_ _) 5 (
+                    _ 6 (_ _)
                 )
             )
             9 (
-                8 10
+                8 () 10 ()
             )
         )
     )
 
-    bst : Bst : 7 (3 (2 5 (4 6)) 9 (8 10))
+    bst : Bst : 7 (3 (2 5 (_ 6)) 9 (8 10))
 }
 
 ? in : Bst
@@ -60,8 +76,8 @@
     | RectangleId
 )
 
-* Email { address : String}
-* EmailAddress : String
+* Email { address : STRING}
+* EmailAddress : STRING
 email : Email : "jerro@jerro.ch"
 emails : #Email : "dan@jerro.ch" email
 
@@ -104,9 +120,9 @@ error email : ToMailAddress : "jerro@jerro.ch"
     ... email ...
 ]
 
-* Square {
-    ? x
-    ! x*x
+*Square {
+    ?x
+    !y : x*x
 }
 
 * Sum {
@@ -145,7 +161,7 @@ a : 1 2 4 50 5423 3403 24 0
 }
 
 a : 1 2 4 50 5423 3403 24 0
-n : Size : a
+n : ARRAY.LEN : a
 b : (a@0..(n-2) + a@1..(n-1)) / 2
 
 * List (
@@ -187,9 +203,9 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 * List (
     ?T
-    ''( could have additional global fields to cache some values or like
+    '( could have additional global fields to cache some values or the like
     *len : UINT
-    )''
+    )'
     |Empty
     |Node (
         *_val : T  -- T could be of Data or Object or Type. '*' makes clear this is a definition and not an assignment. '_' because could start with lower or upper case letter.
@@ -219,15 +235,16 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
         !out : Node element list
     }
 
-    '' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
+    ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
     *Append {
-        ?list : List:T
+        ?list : List:T  '' Copy input.
         ?element : T
-        .cur : list
-        { .cur : Node 
-            .cur : cur.next
+        .cur : list  '' Define object (reference).
+        { cur : Node  '' As long as cur matches Node...
+            .cur : cur.next  '' it is defined as
         }
-        cur : Node element
+        cur : Node : element
+        !list
     }
 )
 
@@ -346,7 +363,7 @@ list : Start : 1 2 3 list
 *AudioFile : File:Audio.Sample
 
 
-* ExampleDomain {
+*ExampleDomain {
     ' version update
     oldVersion : version
     *version : $000a0101
