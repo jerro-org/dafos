@@ -4,14 +4,13 @@
     *TOSTRING {}
 )
 
-*OBJ (
+*OBJ {
     *SIZE {
         ? object
         ! size
     }
-)
-*DATA
-*TYPE
+}
+*DATA ()
 
 ' Unsafe: compatible with all types.
 *BITS ()
@@ -148,53 +147,3 @@ m.ElementType
         !ref : REF
     }
 )
-
-*DOMAIN {
-    *revision : Revision
-    .update [
-        ' version update
-        .storedData 
-    ]
-    *active {
-        ' active
-    }
-}
-
---- Not built in. Implemented in library.
-* EventStore : DOMAIN {
-}
----
-
-*DIRECTORY : DOMAIN {
-
-}
-
-*TYPEDIRECTORY : DOMAIN
-*MODULE : DOMAIN (
-    *Group (
-        |Mandatory
-        |Optional
-        |Repeated
-        ' ...
-    )
-    *active {
-        *insertGroup [
-            ?new : Group
-            ?after : Handle
-            !handle : Handle
-        ]
-
-        *ToType {
-            ?compileOptions
-            !T : TYPE
-        }
-        *ToCompiledType {
-            !T : TYPE
-        }
-        ! update  '' Multiple views to the module can connect to updates        
-    }
-)
-
-* GETMODULE {
-    
-}

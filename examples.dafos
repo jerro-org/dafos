@@ -104,11 +104,11 @@ emailNone : ToEmailAddress : "Jerro"
 }
 
 {
-    ToEmailAddress.s : "jerro@jerro.ch"
+    .e : ToEmailAddress : "jerro@jerro.ch"
     [
-        print ToEmailAddress.error
+        print e.error
     |
-        print ToEmailAddress.email
+        print e.email
     ]
 }
 
@@ -203,7 +203,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 * List (
     ?T
     '( could have additional global fields to cache some values or the like
-    *len : UINT
+    len : UINT : 0
     )'
     |Empty
     |Node (
@@ -267,7 +267,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 *ArrayIteration {
     ?arr : n#m#FLOAT32
     { i : ITER : 0..n  ' Iterate range
-        { j : ITER : 0..m
+        { j : 0..m  ' Possible constructs here: BOOL expression, type match definition/assignment, ARRAY for iteration
 
         }
     }
@@ -308,8 +308,8 @@ list : Start : 1 2 3 list
 *File (
     ?Element : Obj
     {
-        *Reader.setPos (  '' Reader is a type, hence starts with capital letter. If there is a reader it must be set. So this is not optional --> ().
-            ?pos : Position : 0
+        *Reader.setPos (  ' Reader is a type, hence starts with capital letter. If there is a reader it must be set. So this is not optional --> ().
+            ?pos : Position : 0  ' pos can only be accessed within Reader parts as it is an input to a specific instance of Reader.
         )
         {
             *Reader.read [
@@ -318,9 +318,9 @@ list : Start : 1 2 3 list
             *write [
                 ?in : Element
             ]
+            *clear [
+            ] 
         }
-        *clear [
-        ]        
     }
 )
 

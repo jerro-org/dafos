@@ -1,36 +1,87 @@
-*SYSTEM (
-
-
-*DOMAIN {
-    *revision : Revision
-    .update [
-        ' version update
-        .storedData 
-    ]
-    *active {
-        ' active
-    }
-}
-
---- Not built in. Implemented in library.
-* EventStore : DOMAIN {
-}
----
-
-* MODULE {
-    *active {
-        newGroup [
-            ? newGroup
-            ! handle
+*SYS (
+    *Block (
+        *Ref ()
+        *Load {
+            ?r : Ref
+            !b : Block
+        }
+    )
+    *Domain {
+        *revision : Revision
+        .update [
+            ' version update
+            .storedData 
         ]
-        [
-            ? newLoop
-            ! handle
-        ]
-        ! events        
+        *active {
+            ' active
+        }
     }
-}
 
-*D
+    --- Not built in. Implemented in library.
+    *EventStore : Domain {
+    }
+    ---
 
+    *Directory : Domain {
+        Register
+    }
+
+    *Module : Domain (  ' A module is identified by a UUID
+        *Group (
+            |Mandatory
+            |Optional
+            |Repeated
+            ' ...
+        )
+        *Definition (...)
+        *active {
+            *insertDefinition [...]
+            ...
+            *insertGroup [
+                ?new : Group
+                ?after : Handle
+                !handle : Handle
+            ]
+            ... defines, connects, ...
+            *compile {
+                ?compileOptions
+                !T : Module
+            }
+            ! update  ' Multiple views to the module can connect to updates        
+        }
+    )
+    *Meta : Domain (
+        *Access (|FULL |READ |INTERFACE |NONE)
+        ?path : STRING
+        ' mod : Module
+        *Meta
+        *active {
+            *insertGroup [
+                ?new : Group
+                ?after : Handle
+                !handle : Handle
+            ]
+            ... defines, connects, ...
+            *compile {
+                ?compileOptions
+                !m : Module
+            }
+            !update  ' Multiple views to the module can connect to updates        
+        }
+    )
+
+    .registry (
+        *LayerKind (
+            |Global
+            |Local
+            |Dev
+        )
+        *Add {
+            ?dir : Ref:Directory
+            ?priority : Priority
+            !reg : 
+        }        
+    )
+
+    .log ()
 )

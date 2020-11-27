@@ -1,4 +1,4 @@
-# dafos
+# DAFOS
 DAta Flow Object System
 
 Implementation on Linux
@@ -7,3 +7,6 @@ Use:
 OpenGl
 Jack Audio
 FFmpeg
+
+# Module/Type Tree
+*
