@@ -4,21 +4,23 @@
     *TOSTRING {}
 )
 
-*OBJ {
+*OBJ {  ' Can be a function or an stateful object.
     *SIZE {
         ? object
         ! size
     }
 }
-*DATA ()
-
-' Unsafe: compatible with all types.
-*BITS ()
+*DATA (
+    *FromBytes {  ' Unsafe converstion from of raw data.
+        ?in : DATA
+        ?out : DATA
+    }
+)
 
 ' Type with special syntax
 *ARRAY# (
-    ?size
-    ?ElementType
+    ?T
+    ?size : UINT#_
     *GET@ {
         ?array
         ?at
@@ -37,21 +39,11 @@
     }
     *LEN {
         ?array
+        !lenghts : UINT#_
     }
 )
 
 *STRING (
-    *GET@ {
-        ?array
-        ?at
-        !element
-    }
-    *SET@ {
-        ?array
-        ?index
-        ?element
-        !array
-    }
     *CONCAT, {
         ?a
         ?b
@@ -90,14 +82,14 @@ m.ElementType
 )
 
 *NUM (
-    *numerator (
+    .numerator (  ' . definitions can only be accessed from functions within NUM or types derived from NUM.
         *size
         *negative
     )
-    *denominator (
+    .denominator (
         *size
     )
-    *exponent (
+    .exponent (
         *size
         *neg
     )
@@ -117,6 +109,14 @@ m.ElementType
     *REM\
     '' ...
 )
+
+'( More functions for NUM
+*NumExt : NUM (
+    *Reduce {
+        ' numerator/denominator/... can be accessed from here.
+    }
+) 
+)'
 
 *SET (
     (

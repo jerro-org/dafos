@@ -1,20 +1,29 @@
 *SYS (
     *Block (
-        *Ref ()
-        *Load {
+        *Ref ()  ' A Block.Ref instance is not allowed to leave the Domain.
+        *Fetch {
             ?r : Ref
             !b : Block
         }
+        *Release {
+            ?r : Ref
+        }
+        *Size {  ' Size in bytes.
+            !s : UINT
+        }
     )
+    '(
+    *ByteBlock : Block (
+        *bytes : BYTE#_  ' Automatically gives the array the length to fill up the Block.
+    )
+    )'
     *Domain {
         *revision : Revision
-        .update [
+        .Update [
             ' version update
             .storedData 
         ]
-        *active {
-            ' active
-        }
+        .Active {}
     }
 
     --- Not built in. Implemented in library.
@@ -26,7 +35,7 @@
         Register
     }
 
-    *Module : Domain (  ' A module is identified by a UUID
+    *Module : Domain {  ' A module is identified by a UUID
         *Group (
             |Mandatory
             |Optional
@@ -34,7 +43,7 @@
             ' ...
         )
         *Definition (...)
-        *active {
+        *active : Active {
             *insertDefinition [...]
             ...
             *insertGroup [
@@ -55,7 +64,7 @@
         ?path : STRING
         ' mod : Module
         *Meta
-        *active {
+        *active : Active {
             *insertGroup [
                 ?new : Group
                 ?after : Handle
