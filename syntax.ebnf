@@ -1,4 +1,15 @@
-InstanceId = LowerLetter(Letter|Digit);
-TypeId = UpperLetter(Letter|Digit);
-AnyId = '_'(Letter|Digit);
+InstanceId = LowerLetter{Letter|Digit};
+TypeId = UpperLetter{Letter|Digit};
+AnyId = '_'LowerLetter{Letter|Digit};
 IgnoreId = '_';
+
+Id = InstanceId|TypeId|AnyId|IgnoreId;
+
+Number = ;
+String = "{Character}";
+
+List = ;
+Expression = ;
+Statement = ;
+
+Definition = ;

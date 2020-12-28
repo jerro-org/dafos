@@ -1,4 +1,4 @@
-' I do not like single case discriminated unions as they either do not force check or are unhandy.
+' We do not like single case discriminated unions as they either do not force check or are unhandy.
 ' If forced check is required, wrap type
 *Email ( 
     .str : STRING
@@ -9,26 +9,26 @@
 
 ' Discriminated union:
 *Rate (
-    |Constant : Rational64
     |Variable
+    |Constant : Rational64
 )
 
 * Mixer {
-    ? n m
+    ?n ?m
     smpRate : RateOf : smp
-    par {
-        smp {
+    *par {
+        *smp {
             RateHere
         }
     }
 }
 
 * Bst (
-    | Empty
-    | Node (
-        * value : Num
-        * left : Bst
-        * right : Bst
+    |Empty_  ' Underscore is an shortcut definition 'for the neutral case' (like operators for functions).
+    |Node (
+        *value : Num
+        *left : Bst
+        *right : Bst
     )
 )
 
@@ -39,20 +39,42 @@
    6
 )'
 {
-   bst : Bst : (
-        7 (
-            3 (
-                2 (_ _) 5 (
-                    _ 6 (_ _)
-                )
-            )
-            9 (
-                8 () 10 ()
+    ' Full
+    bst : Bst.Node : 7 (
+        Bst.Node : 3 (
+            Bst.Node : 2 Bst.Empty Bst.Empty
+        ) (
+            Bst.Node : 5 Bst.Empty (
+                Bst.Node : 6 Bst.Empty Bst.Empty
             )
         )
+    ) (
+        Bst.Node : 9 (
+            Bst.Node : 8 Bst.Empty Bst.Empty
+        ) (
+            Bst.Node : 10 Bst.Empty Bst.Empty
+        )
     )
-
-    bst : Bst : 7 (3 (2 5 (_ 6)) 9 (8 10))
+    ' Right side of "Bst :" inherits the Bst namespace and "Empty" is replaced by "_".
+    bst : Bst : 7 (
+        3 (
+            2 _ _
+        ) (
+            5 _ (
+                6 _ _
+            )
+        )
+    ) (
+        9 (
+            8 _ _
+        ) (
+            10 _ _
+        )
+    )
+    ' Written on one line.
+    bst : Bst : 7 (3 (2 _ _) (5 _ (6 _ _))) (9 (8 _ _) (10 _ _))
+    ' Flattened. Still unambiguous.
+    bst : Bst : 7 3 2 _ _ 5 _ 6 _ _ 9 8 _ _ 10 _ _
 }
 
 ? in : Bst
@@ -164,10 +186,10 @@ n : ARRAY.LEN : a
 b : (a@0..(n-2) + a@1..(n-1)) / 2
 
 * List (
-    ? T
+    ?T
     -- Stands for Union Cases
-    | End
-    | Node : {
+    |End
+    |Node : {
         *val : T
         *next : List : T -- a cycle
     }
@@ -204,7 +226,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 * List (
     ?T
-    '( could have additional global fields to cache some values or the like
+    '( We could have additional fields to cache some values or the like.
     len : UINT : 0
     )'
     |Empty
@@ -219,9 +241,9 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
         ?in : List:T
         ?F {
             ?in : T
-            !out : T
+            !out : U
         }
-        .out : List:T : Empty
+        .out : List:U : Empty
         .cur : out
         { in : Node
             cur : Node : F:in._val Empty
@@ -251,7 +273,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 )
 
 *ListMapExample {
-    list : List:Float32 : 0 1 2 3 4 5
+    list : List:Num : 0 1 2 3 4 5
     newList : List.Map : list {
         !newElement : ?element + 1
     }
@@ -269,7 +291,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 *ArrayIteration {
     ?arr : n#m#FLOAT32
-    { i : ITER : 0..n  ' Iterate range
+    { i : 0..n  ' Iterate range
         { j : 0..m  ' Possible constructs here: BOOL expression, type match definition/assignment, ARRAY for iteration
 
         }
@@ -289,7 +311,7 @@ l3 : l 5
 
 }
 
--- Recursive List
+-- Cyclic List
 list : (SList:Int32).Start : (1 (2 (3 list)))
 list : Start : 1 2 3 list
 

@@ -1,26 +1,49 @@
+
+*RATE (
+    |VAR
+    |CONST {
+        *val : RATIONAL64
+        *source : 
+    }
+)
+
+*SIZE : UINT64
+
+*CLOCK : (
+    |SYS
+    |DEV : HANDLE
+)
+
 *ANY (
+    -size : SIZE
+
     *EQ= {}
     *NEQ<> {}
     *TOSTRING {}
 )
 
+
 *OBJ {  ' Can be a function or an stateful object.
-    *SIZE {
-        ? object
-        ! size
-    }
+    -rate : RATE
+    -clock : (SYSTEM)
 }
+
+' The base type for all data. 
 *DATA (
-    *FromBytes {  ' Unsafe converstion from of raw data.
+    *FromBytes {  ' Unsafe conversion from of raw data.
         ?in : DATA
         ?out : DATA
     }
 )
 
+*HANDLE (
+
+)
+
 ' Type with special syntax
 *ARRAY# (
     ?T
-    ?size : UINT#_
+    ?size : UINT#d
     *GET@ {
         ?array
         ?at
@@ -39,7 +62,7 @@
     }
     *LEN {
         ?array
-        !lenghts : UINT#_
+        !lenghts : UINT#d
     }
 )
 
@@ -76,13 +99,16 @@ m.ElementType
 *BOOL (
     |TRUE
     |FALSE
-    *AND&& ()
-    *OR|| ()
-    *XOR^^  ' Same as NEQ<> but less binding.
+
+    *AND&& {}
+    
+    *OR|| {}
+    
+    *XOR^^ {} ' Same as NEQ<> but less binding.
 )
 
 *NUM (
-    .numerator (  ' . definitions can only be accessed from functions within NUM or types derived from NUM.
+    .numerator (  ' Dot ('.') definitions can only be accessed from functions within NUM or types derived from NUM.
         *size
         *negative
     )
@@ -99,18 +125,30 @@ m.ElementType
         ?b
         !c
     }
-    *ADDEXT++ {
+    *ADDEXT++ { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
         ?a
         ?b
         !c
     }
+    *MULWRAP {
+
+    }
+    *MULEXT** { ' The results mantissa is twice as 
+
+    }
+
     *DIVTRUNC/
     *DIVEXT//
     *REM\
     '' ...
+
+    *SAT {
+    }
+    *CHECK {  ' Check if any error flag was set during computation of the number in this scope.
+    }
 )
 
-'( More functions for NUM
+'( More functions for NUM could be defined in a derived type.
 *NumExt : NUM (
     *Reduce {
         ' numerator/denominator/... can be accessed from here.
@@ -141,9 +179,12 @@ m.ElementType
     )
 )
 
+'( Do we need references. Maybe use more heavyweight HANDLES for something that should be used as seldom as possible.
 *REF (
     *GET {
         ?_any : ANY
         !ref : REF
     }
-)
+)    
+)'
+

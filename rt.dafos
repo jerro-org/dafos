@@ -1,0 +1,13 @@
+' Realtime features of System.
+
+*RT (
+    *Rate (
+        |Var
+        |Const : Rational64
+    )
+    *RateOf {
+        ?s  ' Any signal group can be given as input.
+        !r : Rate
+    }
+)
+
