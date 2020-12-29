@@ -1,40 +1,4 @@
-*SYS (
-    *Block (
-        *Ref ()  ' A Block.Ref instance is not allowed to leave the Domain.
-        *Fetch {
-            ?r : Ref
-            !b : Block
-        }
-        *Release {
-            ?r : Ref
-        }
-        *Size {  ' Size in bytes.
-            !s : UINT
-        }
-    )
-    '(
-    *ByteBlock : Block (
-        *bytes : BYTE#_  ' Automatically gives the array the length to fill up the Block.
-    )
-    )'
-    *Domain {
-        *revision : Revision
-        .Update [
-            ' version update
-            .storedData 
-        ]
-        .Active {}
-    }
-
-    --- Not built in. Implemented in library.
-    *EventStore : Domain {
-    }
-    ---
-
-    *Directory : Domain {
-        Register
-    }
-
+*DAFOS (
     *Module : Domain {  ' A module is identified by a UUID
         *Group (
             |Mandatory
@@ -91,15 +55,4 @@
             !reg : ...
         }        
     )
-
-    ' Global logger.
-    *Log {
-
-    }
-
-    ' Garbage collect all objects of the domain. This may not be done during real-time processing.
-    *Collect {}
-
-    ' Write buffered blocks to disk. This may not be done during real-time processing.
-    *Sync {}
 )

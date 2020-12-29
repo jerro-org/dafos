@@ -1,12 +1,32 @@
 ' Realtime features of System.
 
 *RT (
-    *Rate (
-        |Var
-        |Const : Rational64
+    *RATE (
+        |VAR
+        |CONST {
+            *val : RATIONAL64
+            *source : 
+        }
     )
-    *RateOf {
-        ?s  ' Any signal group can be given as input.
+
+    *SIZE : UINT64
+
+    *Src : (
+        |SYS
+        |DEV : HANDLE
+    )
+    *CLK (
+        |Var
+        |Const (
+            *src (
+                |SYS
+                |DEV : ID
+            )
+            *rate : Rational64
+        )
+    )
+    *RATE {
+        ?o : Handle ' Any signal group can be given as input.
         !r : Rate
     }
 )

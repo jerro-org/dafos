@@ -1,0 +1,12 @@
+*SYS (
+    ' Global logger.
+    *Log {
+
+    }
+
+    ' Garbage collect all objects of the domain. This may not be done during real-time processing.
+    *Collect {}
+
+    ' Write buffered blocks to disk. This may not be done during real-time processing.
+    *Sync {}
+)

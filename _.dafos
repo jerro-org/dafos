@@ -1,25 +1,9 @@
-
-*RATE (
-    |VAR
-    |CONST {
-        *val : RATIONAL64
-        *source : 
-    }
-)
-
-*SIZE : UINT64
-
-*CLOCK : (
-    |SYS
-    |DEV : HANDLE
-)
-
 *ANY (
-    -size : SIZE
+    *Eq= {}
+    *Neq<> {}
+    *String {
 
-    *EQ= {}
-    *NEQ<> {}
-    *TOSTRING {}
+    }
 )
 
 
@@ -37,10 +21,12 @@
 )
 
 *HANDLE (
-
 )
 
-' Type with special syntax
+' Array definition:
+'   matrix : ARRAY NUM (3 3)
+' with shortcut
+'   matrix : 3#3#NUM
 *ARRAY# (
     ?T
     ?size : UINT#d
@@ -49,7 +35,12 @@
         ?at
         !element
     }
-    *SET@: {
+    ' The set operator is a shortcut to make
+    '   array : SET : array index element
+    ' look like an inplace operation
+    '   array@index : element
+    ' with re-assignment of signal name "array"
+    *SET@: {  ' array@index : x
         ?array
         ?index
         ?element
