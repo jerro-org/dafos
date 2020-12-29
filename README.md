@@ -1,12 +1,9 @@
-# DAFOS
-DAta Flow Object System
+# DAFOS - DAta Flow Object System
 
-Implementation on Linux
-X11 take root window and be a window manager or just run in a window.
-Use:
-OpenGl
-Jack Audio
-FFmpeg
+## Implementation on Linux
+* X11: take root window and be a window manager or just run in a window.
+* OpenGl
+* Jack Audio
+* FFmpeg
 
-# Module/Type Tree
-*
+## Module/Type Tree

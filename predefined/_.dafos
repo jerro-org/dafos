@@ -1,16 +1,12 @@
+' Any data or object or type.
 *ANY (
-    *Eq= {}
-    *Neq<> {}
+    *Eq= {
+    }
+    *Neq<> {
+    }
     *String {
-
     }
 )
-
-
-*OBJ {  ' Can be a function or an stateful object.
-    -rate : RATE
-    -clock : (SYSTEM)
-}
 
 ' The base type for all data. 
 *DATA (
@@ -20,6 +16,16 @@
     }
 )
 
+' Can be a function or an stateful object.
+*OBJ {
+}
+
+' FIXME: Do we need to define 'TYPE'?
+*TYPE {
+}
+
+' To get a handle of an object:
+'   o : .obj
 *HANDLE (
 )
 
@@ -30,7 +36,7 @@
 *ARRAY# (
     ?T
     ?size : UINT#d
-    *GET@ {
+    *Get@ {
         ?array
         ?at
         !element
@@ -40,30 +46,30 @@
     ' look like an inplace operation
     '   array@index : element
     ' with re-assignment of signal name "array"
-    *SET@: {  ' array@index : x
+    *Set@: {  ' array@index : x
         ?array
         ?index
         ?element
         !array
     }
-    *CONCAT, {
+    *Concat, {
         ?a
         ?b
         ?c
     }
-    *LEN {
+    *Len {
         ?array
         !lenghts : UINT#d
     }
 )
 
 *STRING (
-    *CONCAT, {
+    *Concat, {
         ?a
         ?b
         !c
     }
-    *LEN { 
+    *Len { 
         ?array
     }
 )

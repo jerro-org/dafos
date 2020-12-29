@@ -229,7 +229,7 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
     '( We could have additional fields to cache some values or the like.
     len : UINT : 0
     )'
-    |Empty
+    |Empty_  ' Neutral element.
     |Node (
         *_val : T  -- T could be of Data or Object or Type. '*' makes clear this is a definition and not an assignment. '_' because could start with lower or upper case letter.
         *next : List:T
@@ -243,16 +243,17 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
             ?in : T
             !out : U
         }
-        .out : List:U : Empty
-        .cur : out
-        { in : Node
-            cur : Node : F:in._val Empty
-            .cur : cur.next
+        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
+        ^cur : out  ' Define a reference to the same Empty (null), making it mutable.
+        { in : Node  ' As long as in is a 'Node' (not 'Empty')...
+            cur : Node : F:in._val _  ' ... make a new 'Node' that replaces 'Empty' ...
+            ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
+            in : in.next
         }
         !out
     }
 
-    *Prepend {  ' note that Prepend does not mutate the input list
+    *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
         ?element : T
         ?list : List:T
         !out : Node : element list
