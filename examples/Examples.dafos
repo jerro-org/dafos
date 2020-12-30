@@ -182,28 +182,8 @@ a : 1 2 4 50 5423 3403 24 0
 }
 
 a : 1 2 4 50 5423 3403 24 0
-n : ARRAY.LEN : a
+n : ARRAY.Len : a
 b : (a@0..(n-2) + a@1..(n-1)) / 2
-
-* List (
-    ?T
-    -- Stands for Union Cases
-    |End
-    |Node : {
-        *val : T
-        *next : List : T -- a cycle
-    }
-)
-
-* Cycle (
-    ? T
-    | Node : {
-        * val : T
-        * next : Node
-    }
-)
--- Example
-cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 * InsertAfter {
     ?T
@@ -224,12 +204,41 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
     )
 )
 
-* List (
+' Implementing data structures using pointers.
+*List (
+    ?T
+    .Node : PTR:(
+        *v : T
+        *next : Node
+    )
+    .first : Node
+
+    *Map {
+        ?in : List:T
+        ?F {
+            ?in : T
+            !out : U
+        }
+        curIn : in.first
+        out : List:U
+        curOut : out.first  ' Define a reference to the same Empty (null), making it mutable.
+        { in : Some  ' As long as in is a 'Node' (not 'Empty')...
+            cur : Node : F:in._val  ' ... make a new 'Node' that replaces 'Empty' ...
+            ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
+            in : in.next
+        }
+        !out
+    }
+
+    
+)
+
+*List (
     ?T
     '( We could have additional fields to cache some values or the like.
-    len : UINT : 0
+    .len : UINT : 0
     )'
-    |Empty_  ' Neutral element.
+    |End_  ' Neutral element.
     |Node (
         *_val : T  -- T could be of Data or Object or Type. '*' makes clear this is a definition and not an assignment. '_' because could start with lower or upper case letter.
         *next : List:T
@@ -243,10 +252,10 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
             ?in : T
             !out : U
         }
-        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
-        ^cur : out  ' Define a reference to the same Empty (null), making it mutable.
+        out : _  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
+        ^cur : out  ' Define a reference/mutator to the same Empty (null), making it mutable.
         { in : Node  ' As long as in is a 'Node' (not 'Empty')...
-            cur : Node : F:in._val _  ' ... make a new 'Node' that replaces 'Empty' ...
+            cur : Node : F:in._val  ' ... make a new 'Node' that replaces 'Empty' ...
             ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
             in : in.next
         }
@@ -254,24 +263,62 @@ cycle : cycle:Int32 : (1 (2 (3 cycle)))
     }
 
     *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
-        ?element : T
+        ?e : T
         ?list : List:T
-        !out : Node : element list
+        !out : Node : e list
     }
 
     ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
 
     *Append {
         ?list : List:T  ' Copy input.
-        ?element : T
-        .cur : list  ' Define object (reference).
+        ?e : T
+        ^cur : list  ' Define object (reference).
         { cur : Node  ' As long as cur matches Node...
-            .cur : cur.next  ' redefine it with the next element...
+            ^cur : cur.next  ' redefine it with the next element...
         }  ' until it is empty.
         cur : Node : element
         !list
     }
 )
+
+*DList (
+    ?T
+    *next : DList:T
+    *prev : DList:T
+    [
+        *_val : T
+    ]
+
+    *PushBack {
+        ?e : T
+        ^new : Node e
+        [ last : Node
+            last.next : new
+            last : new
+        | last : _
+            last : Node e
+            first : Node e
+        ]
+        last :
+
+    }
+)
+
+' Producing a cycle:
+.cycle : List:NUM : 1 2 3 cycle
+
+'(
+list : List:NUM : 1 2 3
+end : ^list
+{ end : Node
+    end : ^end.next
+}
+end : ^list
+)'
+
+
+cycle : cycle:Int32 : (1 (2 (3 cycle)))
 
 *ListMapExample {
     list : List:Num : 0 1 2 3 4 5
