@@ -1,8 +1,8 @@
 *List : DYNAMIC (
     ?T
     
-    |empty_  ' Neutral element 'operator' '_'. Used as default initialization.
-    |node (
+    |Empty_  ' Neutral element 'operator' '_'. Used as default initialization.
+    |Node (
         *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
         &next : List:T
     )
@@ -70,8 +70,8 @@
 *List : DYNAMIC (
     ?T
     .Node (
-        |empty_  ' Neutral element 'operator' '_'. Used as default initialization.
-        |node (
+        |Empty_  ' Neutral element 'operator' '_'. Used as default initialization.
+        |Node (
             *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
             &next : Node
         )        

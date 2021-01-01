@@ -6,7 +6,14 @@
         *v : Option:T
     )
     s : Node : s s
-    Assert : ...
+
+    CHK.Invariant : s.v.IsNone
+    c : s.next
+    { c.v : Option.Some
+        CHK.Invariant : s.next.prev = s
+        c : c.next
+    }
+    CHK.Invariant : c = s
 
     *PushBack {
         ?
