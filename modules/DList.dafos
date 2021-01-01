@@ -1,0 +1,24 @@
+*DList : DYNAMIC (
+    ?T
+    .Node (
+        &next : Node
+        &prev : Node
+        |sentinel_
+        |_val : T
+    )
+    .s : Node : s s
+
+    *PushBack {
+        ?!
+        ?e : T
+        &new : Node s s.prev e
+        s.prev.next : new
+        s.prev : new
+    }
+    *PopBack {
+        ?e : T
+        &new : Node s s.prev e
+        s.prev.next : new
+        s.prev : new
+    }
+)

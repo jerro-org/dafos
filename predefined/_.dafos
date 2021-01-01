@@ -47,10 +47,9 @@
     '   array@index : element
     ' with re-assignment of signal name "array"
     *Set@: {  ' array@index : x
-        ?array
+        ?!
         ?index
         ?element
-        !array
     }
     *Concat, {
         ?a
@@ -58,7 +57,7 @@
         ?c
     }
     *Len {
-        ?array
+        ?
         !lenghts : UINT#d
     }
 )
@@ -176,12 +175,8 @@ m.ElementType
     )
 )
 
-'( Do we need references. Maybe use more heavyweight HANDLES for something that should be used as seldom as possible.
-*REF (
-    *GET {
-        ?_any : ANY
-        !ref : REF
-    }
-)    
-)'
+' DATA type that may do dynamic memory management using pointers.
+' But pointers are always private to the DYNAMIC.
+*DYNAMIC (
+)
 
