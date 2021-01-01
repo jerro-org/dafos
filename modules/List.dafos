@@ -1,11 +1,9 @@
 *List : DYNAMIC (
     ?T
-    '( We could have additional fields to cache some values or the like.
-    .len : UINT : 0
-    )'
-    |empty_  ' Neutral element 'operator' '_'. Used asdefault initialization.
+    
+    |empty_  ' Neutral element 'operator' '_'. Used as default initialization.
     |node (
-        *_val : T  -- T could be of Data or Object or Type. '*' makes clear this is a definition and not an assignment. '_' because could start with lower or upper case letter.
+        *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
         &next : List:T
     )
 
@@ -19,23 +17,7 @@
         }
         out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
         { in : Node  ' As long as in is a 'Node' (not 'Empty')...
-            out : Node : F:in._val out
-            in : in.next
-        }
-        !out
-    }
-
-    *Map {
-        ?in : List:T
-        ?F {
-            ?in : T
-            !out : U
-        }
-        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
-        ^cur : out  ' Define a reference/mutator to the same Empty (null), making it mutable.
-        { in : Node  ' As long as in is a 'Node' (not 'Empty')...
-            cur : Node : F:in._val  ' ... make a new 'Node' that replaces 'Empty' ...
-            ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
+            out : Node : F:in.v out
             in : in.next
         }
         !out
@@ -47,10 +29,98 @@
         !out : Node : e list
     }
 
+    *Map {
+        ?in : List:T
+        ?F {
+            ?in : T
+            !out : U
+        }
+        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
+        ^cur : out  ' Define a reference/mutator to the same Empty (null), making it mutable.
+        { in : Node  ' As long as in is a 'Node' (not 'Empty')...
+            cur : Node : F:in.v  ' ... make a new 'Node' that replaces 'Empty' ...
+            ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
+            in : in.next
+        }
+        !out
+    }
+
     ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
 
     *Append {
-        ?list : List:T  ' Copy input.
+        ?list : List:T  ' Compiler copies input if necessary.
+        ?e : T
+        ^cur : list  ' Define object (reference).
+        { cur : Node  ' As long as cur matches Node...
+            ^cur : cur.next  ' redefine it with the next element...
+        }  ' until it is empty.
+        cur : Node : element
+        !list
+    }
+)
+
+
+
+
+'''' 
+
+
+
+
+*List : DYNAMIC (
+    ?T
+    .Node (
+        |empty_  ' Neutral element 'operator' '_'. Used as default initialization.
+        |node (
+            *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
+            &next : Node
+        )        
+    )
+    &first : Node
+
+    ' non-mutating functions
+    
+    *RevMap {
+        ?
+        ?F {
+            ?in : T
+            !out : U
+        }
+        cur : first
+        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
+        { cur : node  ' As long as cur matches a 'node' (not 'Empty')...
+            out : Node : F:in.v out
+            cur : cur.next
+        }
+        !out
+    }
+
+    *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
+        ?e : T
+        ?list : List:T
+        !out : Node : e list
+    }
+
+    *Map {
+        ?in : List:T
+        ?F {
+            ?in : T
+            !out : U
+        }
+        out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
+        ^cur : out  ' Define a reference/mutator to the same Empty (null), making it mutable.
+        { in : Node  ' As long as in is a 'Node' (not 'Empty')...
+            cur : Node : F:in.v  ' ... make a new 'Node' that replaces 'Empty' ...
+            ^cur : cur.next  ' ... redefine cur to reference next, making it mutable.
+            in : in.next
+        }
+        !out
+    }
+
+    ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
+
+    *Append {
+        ?list : List:T  ' Compiler copies input if necessary.
         ?e : T
         ^cur : list  ' Define object (reference).
         { cur : Node  ' As long as cur matches Node...

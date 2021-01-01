@@ -198,7 +198,7 @@ b : (a@0..(n-2) + a@1..(n-1)) / 2
 
 * Option (
     ?T
-    |None
+    |none
     |Some (
         *_val T
     )
@@ -354,4 +354,9 @@ list : Start : 1 2 3 list
     *active {
         ' active
     }
+}
+
+*FunctionPrototype {
+    ?x : T
+    !y : U
 }

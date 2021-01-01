@@ -1,0 +1,5 @@
+* Option (
+    ?T
+    |none_
+    |some : T
+)

@@ -3,22 +3,26 @@
     .Node (
         &next : Node
         &prev : Node
-        |sentinel_
-        |_val : T
+        *v : Option:T
     )
-    .s : Node : s s
+    s : Node : s s
+    Assert : ...
 
     *PushBack {
-        ?!
+        ?
         ?e : T
         &new : Node s s.prev e
         s.prev.next : new
         s.prev : new
+        !
     }
     *PopBack {
-        ?e : T
-        &new : Node s s.prev e
-        s.prev.next : new
-        s.prev : new
+        ?
+        ! e : s.prev.v
+        [ e : some
+            s.prev &: s.prev.prev 
+            s.prev.next &: s
+        ]
+        !
     }
 )
