@@ -6,7 +6,7 @@
         *v : Option:T
     )
     s : Node : s s
-
+'(
     CHK.Invariant : s.v.IsNone
     c : s.next
     { c.v : Option.Some
@@ -14,6 +14,7 @@
         c : c.next
     }
     CHK.Invariant : c = s
+)'
 
     *PushBack {
         ?
