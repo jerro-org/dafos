@@ -1,9 +1,11 @@
+' Doubly linked list.
+' This has heavily mutable character. Therefore the compiler needs to copy input if the original is still needed after.
 *DList : DYNAMIC (
     ?T
     .Node (
         &next : Node
         &prev : Node
-        *v : Option:T
+        *v : Option:T  ' This is None only for s (the sentinel).
     )
     s : Node : s s
 '(
@@ -20,17 +22,18 @@
         ?
         ?e : T
         &new : Node s s.prev e
-        s.prev.next : new
-        s.prev : new
+        s.prev.next ^: new  ' Reference mutation
+        s.prev ^: new
         !
     }
     *PopBack {
         ?
-        ! e : s.prev.v
-        [ e : some
-            s.prev &: s.prev.prev 
-            s.prev.next &: s
+        !e : s.prev.v  ' This might be none if the list is empty which means s.prev ^= s
+        [ e : Some
+            s.prev ^: s.prev.prev
+            s.prev.next ^: REF : s
         ]
         !
     }
 )
+

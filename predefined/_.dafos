@@ -39,6 +39,7 @@
         ?array
         ?at
         !element
+        [!error]  ' FIXME
     }
     ' The set operator is a shortcut to make
     '   array : SET : array index element
@@ -46,9 +47,10 @@
     '   array@index : element
     ' with re-assignment of signal name "array"
     *Set@: {  ' array@index : x
-        ?!
+        ?
         ?index
         ?element
+        [!error]  ' FIXME
     }
     *Concat, {
         ?a
@@ -92,14 +94,14 @@ m.ElementType
 )'
 
 *BOOL (
-    |TRUE
-    |FALSE
+    |True
+    |False
 
-    *AND&& {}
+    *And&& {}
     
-    *OR|| {}
+    *Or|| {}
     
-    *XOR^^ {} ' Same as NEQ<> but less binding.
+    *Xor^^ {} ' Same as NEQ<> but less binding.
 )
 
 *NUM (

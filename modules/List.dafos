@@ -1,4 +1,4 @@
-' List is a 'DYNAMIC'. This means that it can contain DATA by reference, but none of this can be seen outside the List Data/Module
+' List is a 'DYNAMIC' type. This means that it can contain DATA by reference, but none of this can be seen outside the List Data/Module
 *List : DYNAMIC (
     ?T
     
@@ -30,10 +30,10 @@
     }
 
     *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
-        ?
+        ?in : List:T
         ?v : T
-        first : Node v first
-        !
+        out.first : Node v in.first
+        !out
     }
 
     *Map {
@@ -56,13 +56,13 @@
     ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
 
     *Append {
-        ?  ' Compiler copies input if necessary.
+        ?in : List:T  ' Compiler copies input if necessary.
         ?v : T
-        ^cur : list.first  ' Define reference mutator.
+        ^cur : in.first  ' Define reference mutator.
         { cur : Node  ' As long as cur matches Node...
             ^cur : cur.next  ' redefine it with the next element...
         }  ' until it is empty.
         cur : Node : v
-        !list
+        !in
     }
 )
