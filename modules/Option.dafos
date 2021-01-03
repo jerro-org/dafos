@@ -1,5 +1,19 @@
-* Option (
+*Option (
     ?T
-    |none_
-    |some : T
+    |None_
+    |Some : T
+
+    *Map {
+        ?in
+        ?F {
+            ?i : T
+            !o : U
+        }
+        ( in : Some
+            out : Some : F:i 
+        | in : None
+            out : None
+        )
+        !out
+    }
 )

@@ -34,12 +34,12 @@
 '   matrix : 3#3#NUM
 *ARRAY# (
     ?T
-    ?size : UINT#d
+    ?size : d#UINT
+
     *Get@ {
         ?array
         ?at
         !element
-        [!error]  ' FIXME
     }
     ' The set operator is a shortcut to make
     '   array : SET : array index element
@@ -47,19 +47,15 @@
     '   array@index : element
     ' with re-assignment of signal name "array"
     *Set@: {  ' array@index : x
-        ?
-        ?index
-        ?element
-        [!error]  ' FIXME
+        ?array
+        ?index : d#UINT
+        ?element : T
+        !array
     }
     *Concat, {
         ?a
         ?b
         ?c
-    }
-    *Len {
-        ?
-        !lenghts : UINT#d
     }
 )
 
@@ -81,12 +77,12 @@
 ' Access:
 m : Matrix3D : (1 0 0) (0 1 0) (0 0 1)
 m@1@1 : 2  ' m becomes a new matrix
-m.ElementType
+m.T
 
 *OpenArrayFunction {
-    ?arr : n#m#FLOAT32
-    { i : 0..n  ' Iterate range
-        { j : 0..m
+    ?arr : ##FLOAT32
+    { e : arr@i  ' Iterate all
+        { f : arr@j
 
         }
     }
@@ -127,7 +123,7 @@ m.ElementType
         ?b
         !c
     }
-    *MULWRAP {
+    *MULWRAP* {
 
     }
     *MULEXT** { ' The results mantissa is twice as 
@@ -160,8 +156,8 @@ m.ElementType
         ?n : UINT
     )
 
-    AND*
-    OR+
+    AND&
+    OR|
     XOR^
 )
 

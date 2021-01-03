@@ -15,29 +15,29 @@
     ' non-mutating functions
     
     *RevMap {
-        ?
+        ?in
         ?F {
             ?i : T
             !o : U
         }
         out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
-        in : first
+        cur : in.first
         { node : Node  ' As long as in is a 'Node' (not 'Empty')...
-            out.first : Node : F:in.v out.first
-            in : node.next
+            out.first : Node : F:cur.v out.first
+            cur : node.next
         }
         !out
     }
 
     *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
-        ?in : List:T
+        ?in
         ?v : T
         out.first : Node v in.first
         !out
     }
 
     *Map {
-        ?
+        ?in
         ?F {
             ?i : T
             !o : U
@@ -56,7 +56,7 @@
     ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
 
     *Append {
-        ?in : List:T  ' Compiler copies input if necessary.
+        ?in  ' Compiler copies input if necessary.
         ?v : T
         ^cur : in.first  ' Define reference mutator.
         { cur : Node  ' As long as cur matches Node...
