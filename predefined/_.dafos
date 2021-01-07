@@ -23,6 +23,17 @@
 *OBJ : ANY {
 }
 
+' Dangerous object that can register an error. Errors are passed along the syntax tree as long as unchecked.
+' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
+' On an error, function outputs are set to the base value of its type.
+*EOBJ : OBJ {
+}
+
+*CHECK {
+    ?data
+    !result
+}
+
 ' To get a handle of an object:
 '   o : .obj
 *HANDLE : DATA (
@@ -36,17 +47,17 @@
     ?T
     ?size : d#UINT
 
-    *Get@ {
+    *Get@ : EOBJ {
         ?array
         ?at
-        !element
+        !value : T  ' On error value is T's base value.
     }
     ' The set operator is a shortcut to make
     '   array : SET : array index element
     ' look like an inplace operation
     '   array@index : element
     ' with re-assignment of signal name "array"
-    *Set@: {  ' array@index : x
+    *Set@: : EOBJ {  ' array@index : x
         ?array
         ?index : d#UINT
         ?element : T
@@ -66,7 +77,7 @@
         !c
     }
     *Len { 
-        ?array
+        ?s
     }
 )
 
@@ -86,6 +97,15 @@ m.T
 
         }
     }
+    ?oldArr : m#n#FLOAT32
+    newArr : m#n#FLOAT32
+    { e f : arr@i@j oldArr@i@j
+        f : e + 1
+    }
+    { e : oldArr@i@j
+    & f : newArr@i@j
+        f : e + 1
+    }
 }
 )'
 
@@ -101,45 +121,95 @@ m.T
 )
 
 *NUM (
+    ' We define fields here that would make it possible to implement arbitrary length/precision numbers
     .numerator (  ' Dot ('.') definitions can only be accessed from functions within NUM or types derived from NUM.
-        *size
         *negative
-    )
-    .denominator (
         *size
     )
     .exponent (
         *size
         *neg
     )
+    .denominator (  ' Base value is 1 for this.
+        *size
+    )
 
-    *ADDWRAP+ {
+    ' Result will have the fixed size of the input with the bigger range.
+    ' Wrapping for integers,
+    ' saturating for floats (+-infinity),
+    ' not allowed for generic numbers and not statically defined or statically different denominators.
+    *Add+ {
         ?a
         ?b
         !c
     }
-    *ADDEXT++ { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
+    *Sub- {
+    }
+
+    ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
+    ' Not allowed for not statically defined or statically different denominators.
+    *AddExt++ {
         ?a
         ?b
         !c
     }
-    *MULWRAP* {
+    *SubExt-- { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
+        ?a
+        ?b
+        !c
+    }
+
+    ' Result will have the fixed size of the input with the bigger range.
+    *Mul* {
 
     }
-    *MULEXT** { ' The results mantissa is twice as 
+    ' The results numerator size is the sum of the input numerator sizes.
+    *MulExt** { 
 
     }
 
-    *DIVTRUNC/
-    *DIVEXT//
-    *REM\
-    '' ...
-
-    *SAT {
+    ' Result will have the fixed size of the input with the bigger range.
+    *Div/ : EOBJ {
     }
-    *CHECK {  ' Check if any error flag was set during computation of the number in this scope.
+    *Rem\ : EOBJ {
+    }
+    ' 
+    *DivExt// : EOBJ {
+    }
+
+    ' out = in * 2^n
+    *Shift<< {
+    }
+
+    ' Can be used from a derived data like 'someInt32Number : INT32.SatRound : someFloat64number'
+    *SatRound {
+    }
+    *SatTrunc {
+    }
+    *WrapRound {
+    }
+    *WrapTrunc {
     }
 )
+*INT : NUM (
+    .denominator : 1
+    .exponent : 0
+)
+*INT8
+*INT16
+*INT32 : INT (
+    .numerator (
+        .size : 32
+    )
+)
+*INT64
+*UINT
+*UINT8
+*UINT16
+*UINT32
+*UINT64
+*FLOAT32
+*FLOAT64
 
 '( More functions for NUM could be defined in a derived type.
 *NumExt : NUM (
@@ -156,10 +226,28 @@ m.T
         ?n : UINT
     )
 
-    AND&
-    OR|
-    XOR^
+    *And& {
+
+    }
+    *Or| {
+
+    }
+    *Xor^ {
+
+    }
+
+    *Shift<< {
+        ?in
+        ?n
+        !out
+    }
+    *Rotate<<< {
+    }
 )
+*SET8
+*SET16
+*SET32
+*SET64
 
 *INT : NUM (
     .denominator : 1

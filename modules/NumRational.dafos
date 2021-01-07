@@ -1,0 +1,10 @@
+
+*Math : NUM (
+    ' TODO: Redefine NUM Operators to allow all operations on rationals.
+
+    *Reduce {
+        ' numerator from NUM can be accessed from here.
+    }
+    *Expand {
+    }
+)

@@ -252,7 +252,7 @@ l2 : 0 l
 l3 : l 5
 
 { l : Node
-| l.val <
+& l.val <
     o : 
 
 

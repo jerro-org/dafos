@@ -4,13 +4,13 @@
     
     ' Private implementation:
     .Node (
-        |Empty_  ' Neutral element 'operator' '_'. Used as default initialization.
-        |Node (
+        |None_  ' Neutral element 'operator' '_'. Used as default initialization.
+        |Some (
             *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
-            &next : Node
+            ^next : Element
         )        
     )
-    &first : Node
+    ^first : Node
 
     ' non-mutating functions
     
@@ -22,7 +22,7 @@
         }
         out : List:U  ' Define 'out' as a list that is 'Empty' (implemented as null pointer). Keep it as the beginning of the list.
         cur : in.first
-        { node : Node  ' As long as in is a 'Node' (not 'Empty')...
+        { node : Some  ' As long as in is a 'Node' (not 'Empty')...
             out.first : Node : F:cur.v out.first
             cur : node.next
         }
@@ -32,7 +32,7 @@
     *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
         ?in
         ?v : T
-        out.first : Node v in.first
+        out.first : Some v in.first
         !out
     }
 
@@ -43,11 +43,11 @@
             !o : U
         }
         out : List:U 
-        ^curOut : out.first  ' Define a reference-mutator, making out.first mutable.
+        ^^curOut : out.first  ' Define a mutator, making out.first reference field mutable.
         curIn : in.first  ' Up to the compiler to treat this as a reference or not. We just read from in, so logic is the same.
-        { curIn : Node  ' As long as in is a 'Node' (not 'Empty')...
-            curOut : Node : F:in.v  ' ... make a new 'Node' that replaces 'Empty' ...
-            ^curOut : curOut.next  ' ... redefine cur to reference next, making it mutable.
+        { curIn : Some  ' As long as in is a 'Node' (not 'Empty')...
+            curOut^^ : Some : F:in.v  ' ... make a new 'Node' that replaces 'Empty' (mutate)...
+            ^^curOut : curOut.next  ' ... redefine cur to reference next, making it mutable.
             curIn : curIn.next
         }
         !out
@@ -58,11 +58,11 @@
     *Append {
         ?in  ' Compiler copies input if necessary.
         ?v : T
-        ^cur : in.first  ' Define reference mutator.
-        { cur : Node  ' As long as cur matches Node...
-            ^cur : cur.next  ' redefine it with the next element...
+        ^^cur : in.first  ' Define reference mutator.
+        { cur : Some  ' As long as cur matches Node...
+            ^^cur : cur.next  ' redefine it with the next element...
         }  ' until it is empty.
-        cur : Node : v
+        cur^^ : Some : v
         !in
     }
 )

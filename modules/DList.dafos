@@ -8,32 +8,34 @@
         *v : Option:T  ' This is None only for s (the sentinel).
     )
     s : Node : s s
-'(
-    CHK.Invariant : s.v.IsNone
-    c : s.next
-    { c.v : Option.Some
-        CHK.Invariant : s.next.prev = s
-        c : c.next
-    }
-    CHK.Invariant : c = s
-)'
+
 
     *PushBack {
         ?
         ?e : T
         &new : Node s s.prev e
-        s.prev.next ^: new  ' Reference mutation
-        s.prev ^: new
+        s.prev.next^ : new&  ' Reference mutation
+        s.prev^ : new&
         !
     }
     *PopBack {
         ?
-        !e : s.prev.v  ' This might be none if the list is empty which means s.prev ^= s
+        !e : s.prev.v  ' This might be 'None' if the list is empty which means 's.prev& = s&'
         [ e : Some
-            s.prev ^: s.prev.prev
-            s.prev.next ^: REF : s
+            s.prev^ : s.prev.prev
+            s.prev.next^ : s
         ]
         !
     }
+
+'(
+    CHK.Assert : s.v.IsNone
+    c : s.next
+    { c.v : Option.Some
+        CHK.Assert : s.next.prev& = s&
+        c : c.next
+    }
+    CHK.Assert : c = s
+)'
 )
 
