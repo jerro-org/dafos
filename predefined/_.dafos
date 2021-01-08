@@ -34,9 +34,14 @@
     !result
 }
 
-' To get a handle of an object:
+' FIXME Do we actually need it for data?)
+' To get a handle of any data or object:
 '   o : .obj
 *HANDLE : DATA (
+    *Type {
+        ?h
+        !T
+    }
 )
 
 ' Array definition:
@@ -106,6 +111,13 @@ m.T
     & f : newArr@i@j
         f : e + 1
     }
+    { e : oldArr@i@j; f : newArr@i@j
+        f : e + 1
+    }
+
+    ' line breaking
+    signal : Fun1 : Fun2 : Fun3 
+    : Fun4 :
 }
 )'
 
@@ -120,24 +132,27 @@ m.T
     *Xor^^ {} ' Same as NEQ<> but less binding.
 )
 
+' NUM is a generic number.
+' It is designed to allow to keep the precision and length after the four basic operations +, -, *, and /.
 *NUM (
-    ' We define fields here that would make it possible to implement arbitrary length/precision numbers
-    .numerator (  ' Dot ('.') definitions can only be accessed from functions within NUM or types derived from NUM.
-        *negative
-        *size
+    *Sgn (Positive|Negative)
+
+    ' We define fields here that make it possible to implement arbitrary length/precision numbers.
+    .numerator : INT (  ' Dot ('.') definitions can only be accessed from functions within NUM or types derived from NUM.
+        *size : UINT ' stored size
+        *sign : Sign
     )
-    .exponent (
-        *size
-        *neg
+    .exponent : INT (
+        *sign : Sign ' stored size
+        *size : UINT
     )
-    .denominator (  ' Base value is 1 for this.
-        *size
+    .denominator : UINT (  ' Base value is 1 for this.
+        *size : UINT ' stored size
     )
 
     ' Result will have the fixed size of the input with the bigger range.
-    ' Wrapping for integers,
-    ' saturating for floats (+-infinity),
-    ' not allowed for generic numbers and not statically defined or statically different denominators.
+    ' If one of the inputs has 
+    ' Wrapping for integers, saturating for floats (+-infinity).
     *Add+ {
         ?a
         ?b
@@ -181,14 +196,37 @@ m.T
     *Shift<< {
     }
 
-    ' Can be used from a derived data like 'someInt32Number : INT32.SatRound : someFloat64number'
+    ' Check if the actual data in the input number would fit into this type.
+    *CheckFit {
+        ?in
+        !fits : BOOL
+    }
+    ' Can be used from a derived data like 'someInt32Number : INT32.SatRound : arbitraryNumber'
     *SatRound {
+        ?in
+        !out
     }
     *SatTrunc {
     }
     *WrapRound {
     }
     *WrapTrunc {
+    }
+    *Numerator {
+    }
+    *Denominator {
+    }
+    *Exponent {
+    }
+    *Size {
+    }
+    *StoredSize {
+    }
+    *Sign {
+        ?in
+        !out : Sgn
+    }
+    *Absolute {
     }
 )
 *INT : NUM (
@@ -208,8 +246,31 @@ m.T
 *UINT16
 *UINT32
 *UINT64
-*FLOAT32
-*FLOAT64
+*UINT128
+*FLOAT : NUM (.denominator : 1)
+*FLOAT16 : FLOAT (.numerator.size: 11; .exponent.size: 5)
+*FLOAT32 : FLOAT (.numerator.size: 24; .exponetn.size: 8)
+*FLOAT64 : FLOAT (.numerator.size: 53; .exponent.size: 11)
+*FLOAT128
+*FIX
+*FIX8
+*FIX16
+*FIX32
+*FIX64
+*UFIX
+*UFIX8
+*UFIX16
+*UFIX64
+*RATIONAL
+*RATIONAL16
+*RATIONAL32
+*RATIONAL64
+*RATIONAL128
+
+'( Define more concrete types:
+*Fix32q24 : Fix32 (.exponent : -24)
+*Rational64 : RATIONAL (.numerator(.size : 32); .denominator(.size : 32))
+)'
 
 '( More functions for NUM could be defined in a derived type.
 *NumExt : NUM (

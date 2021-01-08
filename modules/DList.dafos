@@ -3,27 +3,28 @@
 *DList : DYNAMIC (
     ?T
     .Node (
-        &next : Node
-        &prev : Node
+        ^next : Node
+        ^prev : Node
         *v : Option:T  ' This is None only for s (the sentinel).
     )
+    ' Note there is no base/default value for Node.next/prev (nothing that ressembles a null pointer),
+    ' so they must always be assigned, which is done with the following recursive assignment
     s : Node : s s
-
 
     *PushBack {
         ?
         ?e : T
-        &new : Node s s.prev e
-        s.prev.next^ : new&  ' Reference mutation
-        s.prev^ : new&
+        new : Node^ : s s.prev e  ' nicer form for 'new : (Node : s s.prev e)^'
+        s.prev.next : new^  ' Reference mutation
+        s.prev : new^
         !
     }
     *PopBack {
         ?
         !e : s.prev.v  ' This might be 'None' if the list is empty which means 's.prev& = s&'
         [ e : Some
-            s.prev^ : s.prev.prev
-            s.prev.next^ : s
+            s.prev^ : s.prev.prev^
+            s.prev.next^ : s^
         ]
         !
     }
@@ -32,10 +33,31 @@
     CHK.Assert : s.v.IsNone
     c : s.next
     { c.v : Option.Some
-        CHK.Assert : s.next.prev& = s&
+        CHK.Assert : s.next.prev^ = s^
         c : c.next
     }
     CHK.Assert : c = s
 )'
 )
 
+'( '^' on the left side of the assignment means dereference (assign the data the mutator points to),
+       on the right side of the assignment it means reference (take the reference/pointer as input, not the value)
+    
+    ^field (*a : STRING; ^b : Node)  ' Definition of a reference field.
+    ...
+    value : field  ' Assign data from 'field' to 'value', deep copying if necessary. 'value' is a normal signal that cannot be used to mutate anything.
+    
+    newNode : Node^ : the content of the node
+    ' same as (as for sin²(alpha)):
+    newNode : (Node : the content of the node)^
+
+    reference : field^  ' Assign 'reference'. reference can be used as normal signal, ...
+    reference.b : newNode^  ' ... but also to mutate content, but never the field itself.
+
+    mutator : field^^  ' Mutator assignment, making the field itself mutable in a later step:
+    mutator^ : newNode^   ' Dereference the mutator to mutate the field reference to point to newNode.
+
+    field : newNode^  ' Field can also be mutated directly using a reference on the right side.
+
+    field : newNode  ' But this copies the node. Refernce signals and fields are used as values when reference is not marke in the assignment itself.
+)'

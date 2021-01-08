@@ -43,11 +43,11 @@
             !o : U
         }
         out : List:U 
-        ^^curOut : out.first  ' Define a mutator, making out.first reference field mutable.
+        curOut : out.first^^  ' Assign a mutator, making out.first reference field mutable.
         curIn : in.first  ' Up to the compiler to treat this as a reference or not. We just read from in, so logic is the same.
         { curIn : Some  ' As long as in is a 'Node' (not 'Empty')...
-            curOut^^ : Some : F:in.v  ' ... make a new 'Node' that replaces 'Empty' (mutate)...
-            ^^curOut : curOut.next  ' ... redefine cur to reference next, making it mutable.
+            curOut : Some^ : F:in.v  ' ... make a new 'Node' that replaces 'Empty' (mutate)...
+            curOut : curOut.next^^  ' ... redefine cur to reference next, making it mutable.
             curIn : curIn.next
         }
         !out
@@ -56,13 +56,13 @@
     ' mutating functions with copying of whole data at beginning that could be optimized out if original value is not needed anymore
 
     *Append {
-        ?in  ' Compiler copies input if necessary.
+        ?in  ' Compiler copies input if still needed.
         ?v : T
-        ^^cur : in.first  ' Define reference mutator.
+        cur : in.first^^  ' Assign reference mutator.
         { cur : Some  ' As long as cur matches Node...
-            ^^cur : cur.next  ' redefine it with the next element...
+            cur : cur.next^^  ' redefine it with the next element...
         }  ' until it is empty.
-        cur^^ : Some : v
+        cur : Some^ : v
         !in
     }
 )
