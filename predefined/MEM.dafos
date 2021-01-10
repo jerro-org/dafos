@@ -17,13 +17,22 @@
         *bytes : BYTE#_  ' Automatically gives the array the length to fill up the Block.
     )
     )'
-    *Domain {
+
+    ' Type for objects that share their structure with Domain.
+    *DObj {
+        .active {}
+    }
+    *Revision ()
+    *Domain : DObj {
         *revision : Revision
-        .Update [
+        .storedData : StoredData (  ' Type for this is automatically generated.
+            *revision : Revision
+        )
+
+        .update [
             ' version update
             .storedData 
         ]
-        .Active {}
     }
 
     --- Not built in. Implemented in library.

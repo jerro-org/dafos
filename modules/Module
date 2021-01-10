@@ -1,0 +1,35 @@
+*Module (
+    ' Module.Meta provides the ability to manipulate a DAFOS.MODULE in a undoable way.
+    ' Module.Meta adds names to a DAFOS.Module and provides an EventStore.
+    *Meta : Domain {
+        *Access (|FULL |READ |INTERFACE |NONE)
+        ?path : STRING
+        ?mod : Module
+        *Meta
+        *active : Active {
+            *addGroup [
+                ?new : Group
+                ?after : Key
+                !key : Key
+            ]
+            ... defines, connects, ...
+            *compile {
+                ?compileOptions
+                !m : Module
+            }
+            !update  ' Multiple views to the module can connect to updates        
+        }
+    }
+
+    *Editor : Domain {
+
+    }
+
+    *TextEditor : Domain {
+
+    }
+
+    *GraphEditor : Domain {
+
+    }
+)

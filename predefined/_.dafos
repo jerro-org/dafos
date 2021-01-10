@@ -261,8 +261,8 @@ m.T
 *UFIX8
 *UFIX16
 *UFIX64
-*RATIONAL
-*RATIONAL16
+*RATIONAL : NUM (.exponent : 0)
+*RATIONAL16 : RATIONAL (.numerator.size : 8; denominator.size : 8)
 *RATIONAL32
 *RATIONAL64
 *RATIONAL128

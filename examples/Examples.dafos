@@ -296,27 +296,26 @@ list : Start : 1 2 3 list
     }
 )
 
-''(
+'(
 *Reader {
     *setPos ()
     {
         *read []
     }
 }
-)''
+)'
 
 --  Free file reader use:
 * FileRenderer {
     file_ : File : Audio.Sample
     file.write : sin : 0.0 .. 2*Math.pi .. 0.02*Math.pi
-    .firstReader : file.Reader  -- '.' says that this is not a signal assignment but an oject instance definition.
+    .firstReader : file.Reader  ' '.' says that this is not a signal assignment but an oject instance definition.
     firstReader.setPos 10
     .secondReader : file.Reader
     secondReader.setPos 20
   
 
 }
-
 
 -- File reader signature:
 *File.Reader {
