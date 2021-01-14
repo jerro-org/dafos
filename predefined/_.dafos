@@ -38,6 +38,7 @@
 ' To get a handle of any data or object:
 '   o : .obj
 *HANDLE : DATA (
+    ?T
     *Type {
         ?h
         !T

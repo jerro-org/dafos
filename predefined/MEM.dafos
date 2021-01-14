@@ -53,11 +53,6 @@
         }
     }
 
-    ' Global logger.
-    *Log {
-
-    }
-
     ' Garbage collect all objects of the domain. This may not be done during real-time processing.
     *Collect {}
 

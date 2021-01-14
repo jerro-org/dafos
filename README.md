@@ -7,3 +7,21 @@
 * FFmpeg
 
 ## Module/Type Tree
+Language predefined types:
+* SYS
+* RT
+* MEM
+* MODULE
+    * Mutator
+
+* Module
+    * Meta
+    * EventStack
+
+* io: dynamically created hardware
+    * audio
+* store:
+    * nand
+    * nor
+    * nvme
+    * usb

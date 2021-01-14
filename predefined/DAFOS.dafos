@@ -32,7 +32,7 @@
             |Dev
         )
         *Add {
-            ?dir : Ref:Directory
+            ?dir : .Directory  ' FIXME . ?
             ?layerKind : LayerKind
             !reg : ...
         }        
