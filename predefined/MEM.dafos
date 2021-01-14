@@ -14,7 +14,7 @@
     )
     '(
     *ByteBlock : Block (
-        *bytes : BYTE#_  ' Automatically gives the array the length to fill up the Block.
+        *bytes : _#BYTE  ' Automatically gives the array the length to fill up the Block.
     )
     )'
 
@@ -41,7 +41,16 @@
     ---
 
     *Directory : Domain {
-        Register
+        ?TKey
+        ?TInfo
+        *active {
+            *register [
+                ?key : TKey
+                ?info : TInfo
+                ?d : DomainHandle
+            ]
+
+        }
     }
 
     ' Global logger.

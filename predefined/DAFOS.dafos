@@ -1,4 +1,5 @@
 *DAFOS (
+
     *Module : Domain {  ' A module is identified by a UUID
         *Group (
             |Mandatory
@@ -24,17 +25,32 @@
         }
     )
 
-
     *Registry (
         *LayerKind (
-            |Global
+            |Global  ' Registry
             |Local
             |Dev
         )
         *Add {
             ?dir : Ref:Directory
-            ?priority : Priority
+            ?layerKind : LayerKind
             !reg : ...
         }        
     )
+
+    *BlockDev {
+    }
+
+    *Node {
+
+    }
+
+    ' Prototype for singleton system manager in a LOSAN SAN.
+    *SystemManager {
+        .rootDir : Directory
+        .
+        
+        connect hardware device ...
+        disconnct hardware device ...
+    }
 )

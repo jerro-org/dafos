@@ -45,7 +45,7 @@
 )
 
 ' Array definition:
-'   matrix : ARRAY NUM (3 3)
+'   matrix : ARRAY : NUM (3 3)
 ' with shortcut
 '   matrix : 3#3#NUM
 *ARRAY# (

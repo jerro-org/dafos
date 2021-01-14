@@ -359,3 +359,24 @@ list : Start : 1 2 3 list
     ?x : T
     !y : U
 }
+
+*MyUi : Ui.Domain {
+    Ui.Vidgets  ' import view gadgets (=vidgets)
+    .mainVidget : ResizeKdt  ' from Ui.Vidgets
+    *active {
+        *control {
+            ?viewSize : 2#UINT
+            mainVidget.Resize : viewSize
+            ?viewPointer : ViewPointer
+            vidgets.Sift : viewPointer
+            *audio {
+
+            }
+            !viewOut : Picture:viewSize
+            ' FIXME Popups are handled by framework
+            [ weHaveAPopupToShow
+                !popUpOut : Picture
+            ]
+        }
+    }
+}
