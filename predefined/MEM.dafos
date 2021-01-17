@@ -22,7 +22,9 @@
     *DObj {
         .active {}
     }
+
     *Revision ()
+    
     *Domain : DObj {
         *revision : Revision
         .storedData : StoredData (  ' Type for this is automatically generated.

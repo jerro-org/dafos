@@ -1,4 +1,4 @@
-*DAFOS (
+*MODULE (
 
     *Module : Domain {  ' A module is identified by a UUID
         *Group (
@@ -31,24 +31,21 @@
             |Local
             |Dev
         )
-        *Add {
+        *AddDir {
             ?dir : .Directory  ' FIXME . ?
             ?layerKind : LayerKind
             !reg : ...
         }        
     )
 
-    *BlockDev {
-    }
-
     *Node {
 
     }
 
     ' Prototype for singleton system manager in a LOSAN SAN.
-    *SystemManager {
-        .rootDir : Directory
-        .
+    *SystemManager : Domain {
+        .directory : Directory
+        .registry : .
         
         connect hardware device ...
         disconnect hardware device ...

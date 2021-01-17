@@ -1,5 +1,5 @@
 *Module (
-    ' Module.Meta provides the ability to manipulate a DAFOS.MODULE in a undoable way.
+    ' Module.Meta provides the ability to manipulate a DAFOS.Module in a undoable way.
     ' Module.Meta adds names to a DAFOS.Module and provides an EventStore.
     *Meta : Domain {
         *Access (|FULL |READ |INTERFACE |NONE)
