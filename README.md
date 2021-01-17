@@ -3,8 +3,9 @@
 ## Implementation on Linux
 * X11: take root window and be a window manager or just run in a window.
 * OpenGl
-* Jack Audio
+* ALSA / Jack Audio
 * FFmpeg
+* Video4Linux2
 
 ## Module/Type Tree
 Language predefined types:
@@ -18,9 +19,9 @@ Language predefined types:
     * Meta
     * EventStack
 
-* io: dynamically created hardware
+* io: dynamically created hardware device stubs
     * audio
-* store:
+* store: dynamically created hardware block storage devices
     * nand
     * nor
     * nvme
