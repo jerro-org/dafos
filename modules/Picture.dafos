@@ -1,0 +1,43 @@
+' Picture data type and basic functions on it.
+' Types and functions for processing of time discrete signals.
+
+*Picture (
+    ?Pixel : n#UINT
+
+    *Region (
+        .fullW
+        .fullH
+        .tileX
+        .tileY
+        .tileW
+        .tileH        
+    )
+    *Tile (
+        .region : Region
+        .pixels : tileH#tileW#Pixel        
+    )
+
+    *Source {
+        [
+            ?outRegions : n#Regions
+        ]
+        !tiles : n#Tiles
+    }
+
+    *Process {
+        [
+            ?outRegion
+        ]
+        ?params...
+
+        ?outRegion
+        !inRegion
+        
+        ?in : Picture
+        ' Example integration of video process
+        ' Flattened process structure of video Processor to always process a buffered picture when params are set
+        ' out : SomeVideoProcess : params in
+        !out : Picture
+    }
+)
+

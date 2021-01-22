@@ -1,0 +1,31 @@
+' Video processing.
+' Types and functions for processing of video streams (typically consisting of RGB pictures).
+
+*Video (
+    ?Pixel : n#UINT
+
+    *Source {
+        [
+            ?outRegions : n#Regions
+        ]
+        !tiles : n#Tiles
+    }
+
+    *Process {
+        .someVideoProcess : SomeVideoProcess
+        *regionReq [
+            ?outRegion
+        ]
+        ?params...
+
+        !inRegion
+        
+        ?in : Picture
+        ' Example integration of video process
+        ' Flattened process structure of video Processor to always process a buffered picture when params are set
+        ' inRegion out : SomeVideoProcess : outRegion params in
+        !out : Picture
+    }
+)
+
+

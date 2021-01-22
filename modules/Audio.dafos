@@ -1,0 +1,11 @@
+' Signal processing.
+' Types and functions for processing of time discrete signals.
+
+*Sp (
+    ?Sample
+    * Rate (
+        |None
+        |Rational64
+    )
+)
+
