@@ -1,0 +1,78 @@
+' Type for objects that share their structure with Domain.
+*DOBJ {
+    .active {}
+}
+    
+' A domain is the predefined type for objects within the blox system.
+' Always the whole domain - except BLOX.Block instances within the domain, which are explicitly fetched - is loaded into memory when the domain is active.
+' Hence it must be kept small enough.
+' Serialization is done by system.
+*DOMAIN (
+    *Revision ()
+    
+    ' Domains may contain references to other domains via domain handles.
+    ' There must be a Mechanism to avoid cyclic references of Domains.
+    *DomainHandle ()
+
+    ' Special rules fo 
+    *Domain : DObj {
+        .this : DomainHandle
+        *revision : Revision
+        .storedData : StoredData (  ' Type for this is automatically generated.
+            *revision : Revision
+        )
+
+        .update [
+            ' version update
+            .storedData 
+        ]
+    }
+
+    *Activate {
+        ?d : DomainHandle
+    }
+
+    *Deactivate {
+        ?d : DomainHandle
+    }
+
+    *Info (
+        .level : UINT32
+    )
+    *GetInfo {
+        ?d : DOMAIN
+        !info
+    }
+
+    *Status (
+        |Inactive
+        |Active
+    )
+    *GetStatus {
+
+    }
+
+    ' Garbage collect all objects of the domain.
+    ' This takes indefinite time and hence breaks real-time processing.
+    *Collect {}
+
+    ' Write all data including buffered blocks to disk.
+    ' Done automatically when deactivating. Used only to persist important data in a long running domain.
+    *Sync {}
+
+    *GetRoot {
+        !root : Domain
+    }
+)
+
+' Domain instances in contrast to instances of other functions can be passed around as references.
+' But unlike data references (that cannot be passed) cyclic references are not possible for domains
+' (because a domain can only reference a domain with type defined before (and not to another instance of its own type).)
+' because a level indicator in the domain is maintained that is kept
+*MyDomain : Domain {
+    ?subDomain : Domain
+    .active {
+        .fileTemp : FileDomain:BITS8  ' Temporary file, not even persisted because it is not seen outside of 'active'. 
+    }
+}
+)'

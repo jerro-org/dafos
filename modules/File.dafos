@@ -1,0 +1,50 @@
+
+
+' Normal datatype.
+*File (
+    ?T : DATA
+    {
+        *Reader.setPos (  ' Reader is a type, hence starts with capital letter. If there is a reader it must be set. So this is not optional --> ().
+            ?pos : Position : 0  ' pos can only be accessed within Reader parts as it is an input to a specific instance of Reader.
+        )
+        {
+            *Reader.read [
+                !out : Element
+            ]
+            *write [
+                ?in : Element
+            ]
+            *clear [
+            ] 
+        }
+    }
+)
+
+*FileDomain : DOMAIN {
+    ?T
+    .f : File:T
+    .active {
+        *Reader.setPos (  ' Reader is a type, hence starts with capital letter. If there is a reader it must be set. So this is not optional --> ().
+            ?pos : Position : 0  ' pos can only be accessed within Reader parts as it is an input to a specific instance of Reader.
+        )
+        {
+            *Reader.read [
+                !out : Element
+            ]
+            *write [
+                ?in : Element
+            ]
+            *clear [
+            ] 
+        }
+    }
+    ' ...
+}
+
+'(
+*Reader {
+    *setPos ()
+    {
+        *read []
+    }
+}

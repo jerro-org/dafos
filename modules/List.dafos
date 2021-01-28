@@ -1,4 +1,4 @@
-' List is a 'DYNAMIC' type. This means that it can contain DATA by reference, but none of this can be seen outside the List Data/Module
+' List is a 'DYNAMIC' data type. This means that it can contain DATA by reference, but none of this can be seen outside the List Module (and extensions of it).
 *List : DYNAMIC (
     ?T
     

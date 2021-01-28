@@ -13,11 +13,16 @@
 
 ' The base type for all data. May contain functions for the type itself as well, hence its a 'MOD'.
 *DATA : MOD (
-    *FromBytes {  ' Unsafe conversion from of raw data.
-        ?in : DATA
-        ?out : DATA
-    }
+    *Size {} ' in bits
+    *Length {} ' in bytes
 )
+
+' Convertable to all other data with same size.
+*BITS : DATA (
+    ?n : UINT
+)
+*BITS8 : BITS:8
+' ...
 
 ' Can be a function or an stateful object.
 *OBJ : ANY {

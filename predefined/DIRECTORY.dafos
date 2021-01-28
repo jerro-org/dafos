@@ -1,0 +1,16 @@
+*DIRECTORY : DOMAIN {
+    ?TKey
+    ?TInfo
+    *active {
+        *register [
+            ?key : TKey
+            ?info : TInfo
+            ?d : DomainHandle
+        ]
+    }
+}
+
+*GetRoot {
+    !root : DIRECTORY
+}
+

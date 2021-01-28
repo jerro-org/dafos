@@ -1,0 +1,20 @@
+*BLOX (
+    *Block (
+        *Ref ()  ' A Block.Ref instance is not allowed to leave the Domain.
+        *Fetch {
+            ?r : Ref
+            !b : Block
+        }
+        *Release {
+            ?r : Ref
+        }
+        *Size {  ' Size in bytes.
+            !s : UINT
+        }
+    )
+    '(
+    *ByteBlock : Block (
+        *bytes : _#BYTE  ' Automatically gives the array the length to fill up the Block.
+    )
+    )'
+)
