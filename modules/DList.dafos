@@ -1,15 +1,15 @@
 ' Doubly linked list.
-' This has heavily mutable character. Therefore the compiler needs to copy input if the original is still needed after.
+' This has heavily mutable character. Therefore the compiler needs to copy input of functions if the original is still needed after.
 *DList : DYNAMIC (
     ?T
     .Node (
-        ^next : Node
-        ^prev : Node
+        *next : ^Node
+        *prev : ^Node
         *v : Option:T  ' This is None only for s (the sentinel).
     )
     ' Note there is no base/default value for Node.next/prev (nothing that ressembles a null pointer),
     ' so they must always be assigned, which is done with the following recursive assignment
-    .s : Node : s s
+    .s : Node : s s Option.None
 
     *PushBack {
         ?
@@ -29,7 +29,7 @@
         !
     }
 
-'(
+'( Invariants for the DList
     CHK.Assert : s.v.IsNone
     c : s.next
     { c.v : Option.Some
@@ -43,7 +43,7 @@
 '( '^' on the left side of the assignment means dereference (assign the data the mutator points to),
        on the right side of the assignment it means reference (take the reference/pointer as input, not the value)
     
-    ^field (*a : STRING; ^b : Node)  ' Definition of a reference field.
+    .field ^(*a : STRING; ^b : Node)  ' Definition of a reference field.
     ...
     value : field  ' Assign data from 'field' to 'value', deep copying if necessary. 'value' is a normal signal that cannot be used to mutate anything.
     

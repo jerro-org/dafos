@@ -1,5 +1,5 @@
 ' Any data or object or type.
-*ANY (
+*ANY : (
     *Eq= {
     }
     *Neq<> {
@@ -9,7 +9,7 @@
 )
 
 ' Just a bunch of 'OBJ'.
-*MOD ()
+*MOD : ()
 
 ' The base type for all data. May contain functions for the type itself as well, hence its a 'MOD'.
 *DATA : MOD (
@@ -34,7 +34,7 @@
 *EOBJ : OBJ {
 }
 
-*CHECK {
+*CHECK : {
     ?data
     !result
 }
@@ -54,7 +54,7 @@
 '   matrix : ARRAY : NUM (3 3)
 ' with shortcut
 '   matrix : 3#3#NUM
-*ARRAY# (
+*ARRAY# : (
     ?T
     ?size : d#UINT
 
@@ -74,20 +74,20 @@
         ?element : T
         !array
     }
-    *Concat, {
+    *Concat, : {
         ?a
         ?b
         ?c
     }
 )
 
-*STRING (
-    *Concat, {
+*STRING : (
+    *Concat, : {
         ?a
         ?b
         !c
     }
-    *Len { 
+    *Len : {
         ?s
     }
 )
@@ -101,7 +101,7 @@ m : Matrix3D : (1 0 0) (0 1 0) (0 0 1)
 m@1@1 : 2  ' m becomes a new matrix
 m.T
 
-*OpenArrayFunction {
+*OpenArrayFunction : {
     ?arr : ##FLOAT32
     { e : arr@i  ' Iterate all
         { f : arr@j
@@ -127,21 +127,24 @@ m.T
 }
 )'
 
-*BOOL (
+*BOOL : (
     |True
     |False
 
-    *And&& {}
+    *And&& : {}
     
-    *Or|| {}
+    *Or|| : {}
     
-    *Xor^^ {} ' Same as NEQ<> but less binding.
+    *Xor^^ : {} ' Same as NEQ<> but less binding.
 )
 
 ' NUM is a generic number.
 ' It is designed to allow to keep the precision and length after the four basic operations +, -, *, and /.
-*NUM (
-    *Sgn (Positive|Negative)
+*NUM : (
+    *Sgn : (
+        |Positive
+        |Negative
+    )
 
     ' We define fields here that make it possible to implement arbitrary length/precision numbers.
     .numerator : INT (  ' Dot ('.') definitions can only be accessed from functions within NUM or types derived from NUM.
@@ -159,33 +162,33 @@ m.T
     ' Result will have the fixed size of the input with the bigger range.
     ' If one of the inputs has 
     ' Wrapping for integers, saturating for floats (+-infinity).
-    *Add+ {
+    *Add+ : {
         ?a
         ?b
         !c
     }
-    *Sub- {
+    *Sub- : {
     }
 
     ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
     ' Not allowed for not statically defined or statically different denominators.
-    *AddExt++ {
+    *AddExt++ : {
         ?a
         ?b
         !c
     }
-    *SubExt-- { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
+    *SubExt-- : { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
         ?a
         ?b
         !c
     }
 
     ' Result will have the fixed size of the input with the bigger range.
-    *Mul* {
+    *Mul* : {
 
     }
     ' The results numerator size is the sum of the input numerator sizes.
-    *MulExt** { 
+    *MulExt** : { 
 
     }
 
@@ -199,40 +202,44 @@ m.T
     }
 
     ' out = in * 2^n
-    *Shift<< {
+    *Shift<< : {
     }
 
     ' Check if the actual data in the input number would fit into this type.
-    *CheckFit {
+    *CheckRange : {
         ?in
         !fits : BOOL
     }
+    *CheckPrecision : {
+        ?in : NUM
+        !fits : BOOL
+    }
     ' Can be used from a derived data like 'someInt32Number : INT32.SatRound : arbitraryNumber'
-    *SatRound {
+    *SatRound : {
         ?in
         !out
     }
-    *SatTrunc {
+    *SatTrunc : {
     }
-    *WrapRound {
+    *WrapRound : {
     }
-    *WrapTrunc {
+    *WrapTrunc : {
     }
-    *Numerator {
+    *Numerator : {
     }
-    *Denominator {
+    *Denominator : {
     }
-    *Exponent {
+    *Exponent : {
     }
-    *Size {
+    *Size : {
     }
-    *StoredSize {
+    *StoredSize : {
     }
-    *Sign {
+    *Sign : {
         ?in
         !out : Sgn
     }
-    *Absolute {
+    *Absolute : {
     }
 )
 *INT : NUM (
@@ -286,7 +293,7 @@ m.T
 ) 
 )'
 
-*SET (
+*SET : (
     (
         ?Accessor  ' Must have finite (small) number of possible values (Enumeration)
     |
@@ -327,8 +334,17 @@ m.T
     )
 )
 
+' Pointer data type with restricted usage.
+*PTR^ : (
+    ?T
+    *Ref^_ : {  ' Real pseudo definition. '^' before identifier, operator cannot be overwritten.
+    }
+    *Deref_^ : {  ' Real pseudo definition. '^' after identifier, operator cannot be overwritten.
+    }
+)
+
 ' DATA type that may do dynamic memory management using pointers.
 ' But pointers are always private to the DYNAMIC.
-*DYNAMIC (
+*DYNAMIC : (
 )
 

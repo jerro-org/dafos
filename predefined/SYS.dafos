@@ -1,23 +1,23 @@
 *SYS (
-    *ErrorInfo (
+    *ErrorInfo : (
     )
 
     ' Register an error
-    *Error {
+    *Error : {
     }
     
-    *Check {
+    *Check : {
         !e : #Result
     }
 
-    *Assert {
+    *Assert : {
         ?c : BOOL
     }
 
-    *AssertNoError {
+    *AssertNoError : {
     }
 
     ' Global logger.
-    *Log {
+    *Log : {
     }
 )

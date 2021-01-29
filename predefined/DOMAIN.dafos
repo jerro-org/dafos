@@ -1,47 +1,59 @@
-' Type for objects that share their structure with Domain.
-*DOBJ {
-    .active {}
-}
-    
 ' A domain is the predefined type for objects within the blox system.
 ' Always the whole domain - except BLOX.Block instances within the domain, which are explicitly fetched - is loaded into memory when the domain is active.
 ' Hence it must be kept small enough.
 ' Serialization is done by system.
-*DOMAIN (
-    *Revision ()
-    
-    ' Domains may contain references to other domains via domain handles.
-    ' There must be a Mechanism to avoid cyclic references of Domains.
-    *DomainHandle ()
+*DOMAIN : (
 
-    ' Special rules fo 
-    *Domain : DObj {
+    *Revision : ()
+
+    ' Prototype for domains.
+    *Domain : {
         .this : DomainHandle
         *revision : Revision
         .storedData : StoredData (  ' Type for this is automatically generated.
             *revision : Revision
         )
 
-        .update [
+        .update : [
             ' version update
             .storedData 
         ]
     }
+    
+    ' Union for the DOMAIN handle
+    ' Domains may contain references to other domains via domain handles.
+    ' There must be a Mechanism to avoid cyclic references of Domains.
+    *HandleError : (
+        *Reason : (
+            *kind : (
+                |NotFound
+                |WrongLevel
+            )
+            *desc : STRING
+        )
+        *reason : Reason
+    )
+    |None : HandleError
+    *Ptr^ : (  ' DOMAIN.Ptr looks like a dafos PTR but follows different rules.
+        ?T : Domain  ' It is only for domains, assignment means assignment of referece no deep copy.
+    )
+    |Shared : Ptr
+    |Exclusive : Ptr
 
-    *Activate {
-        ?d : DomainHandle
+    *Activate : {
+        ?d : Handle
     }
 
-    *Deactivate {
-        ?d : DomainHandle
+    *Deactivate : {
+        ?d : Handle
     }
 
-    *Info (
+    *Info : (
         .level : UINT32
     )
     *GetInfo {
-        ?d : DOMAIN
-        !info
+        ?h : Handle
+        !info : Info
     }
 
     *Status (
@@ -49,7 +61,8 @@
         |Active
     )
     *GetStatus {
-
+        ?h : Handle
+        !status : Status
     }
 
     ' Garbage collect all objects of the domain.
@@ -60,8 +73,8 @@
     ' Done automatically when deactivating. Used only to persist important data in a long running domain.
     *Sync {}
 
-    *GetRoot {
-        !root : Domain
+    *Root {
+        !root : DOMAIN
     }
 )
 
@@ -70,9 +83,24 @@
 ' (because a domain can only reference a domain with type defined before (and not to another instance of its own type).)
 ' because a level indicator in the domain is maintained that is kept
 *MyDomain : Domain {
-    ?subDomain : Domain
+    ?subDomainHandle : DOMAIN
+    ' ...
+
     .active {
-        .fileTemp : FileDomain:BITS8  ' Temporary file, not even persisted because it is not seen outside of 'active'. 
+        .fileTemp : FileDomain:BITS8  ' Temporary file, not even persisted  after MyDomain deactivation because it is not seen outside of 'active'. 
+
+        anotherSubDomainHandle : GetDomain : DIR.Root somePath
+        ( anotherSubDomainHandle : DOMAIN.Exclusive:MyModelDomain
+            ' Allowed to access including connecting ports, because we have got an exclusive handle.
+            outputs : anotherSubDomainHandle.instance.active^ : inputs
+        | anotherSubDomainHandle : DOMAIN.Shared:MyModelDomain
+            ' No exclusive access so we are not allowed to connect but to allocate an accessor.
+            .reader : anotherSubDomainHandle.instance^.active.Reader
+        | anotherSubDomainHandle : DOMAIN:None  ' Errors
+            ' ...
+        | anotherSubDomainHandle : DOMAIN  ' Error: it is shared or exclusive but the domain does not have the expected type.
+            ' ...
+        )
     }
 }
 )'

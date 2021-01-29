@@ -7,10 +7,10 @@
         |None_  ' Neutral element 'operator' '_'. Used as default initialization.
         |Some (
             *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
-            ^next : Element
+            *next : ^Element
         )        
     )
-    ^first : Node
+    .first : ^Node
 
     ' non-mutating functions
     
