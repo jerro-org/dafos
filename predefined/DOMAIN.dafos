@@ -3,7 +3,6 @@
 ' Hence it must be kept small enough.
 ' Serialization is done by system.
 *DOMAIN : (
-
     *Revision : ()
 
     ' Prototype for domains.
@@ -20,6 +19,9 @@
         ]
     }
     
+    'Domain may 
+    ?T : Domain
+
     ' Union for the DOMAIN handle
     ' Domains may contain references to other domains via domain handles.
     ' There must be a Mechanism to avoid cyclic references of Domains.
@@ -37,8 +39,9 @@
     *Ptr^ : (  ' DOMAIN.Ptr looks like a dafos PTR but follows different rules.
         ?T : Domain  ' It is only for domains, assignment means assignment of referece no deep copy.
     )
-    |Shared : Ptr
-    |Exclusive : Ptr
+    |Shared : ^T
+    |Exclusive : ^T
+
 
     *Activate : {
         ?d : Handle

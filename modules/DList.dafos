@@ -14,7 +14,7 @@
     *PushBack {
         ?
         ?e : T
-        new : ^Node : s s.prev e  ' nicer form for 'new : ^(Node : s s.prev e)'
+        new : ^ Node : s s.prev e
         s.prev.next : ^new  ' Reference mutation
         s.prev : ^new
         !
@@ -60,4 +60,6 @@
     field : ^newNode  ' Field can also be mutated directly using a reference on the right side.
 
     field : newNode  ' But this deep-copies the node. Reference signals and fields are used as values when reference is not marke in the assignment itself.
+
+    ?par : ^Node  ' Not allowed for now: reference parameters. Only as special case '^DOMAIN.Domain'.
 )'

@@ -7,7 +7,7 @@
         |None_  ' Neutral element 'operator' '_'. Used as default initialization.
         |Some (
             *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
-            *next : ^Element
+            *next : ^Element  ' A pointer that cannot be seen outside the list module. 'next' is used as any (non-pointer) field (copied by default).
         )        
     )
     .first : ^Node
@@ -46,7 +46,7 @@
         curOut : ^^out.first  ' Assign a mutator, making out.first reference field mutable.
         curIn : in.first  ' Up to the compiler to treat this as a reference or not. We just read from in, so logic is the same.
         { curIn : Some  ' As long as in is a 'Node' (not 'None')...
-            curOut^ : ^Some : F:in.v  ' ... make a new 'Node' that replaces 'None' (mutate)...
+            curOut^ : ^Some:F:in.v  ' ... make a new 'Node' that replaces 'None' (mutate)...
             curOut : ^^curOut.next  ' ... redefine cur to reference next, making it mutable.
             curIn : curIn.next
         }
@@ -62,7 +62,7 @@
         { cur : Some  ' As long as cur matches Some...
             cur : ^^cur.next  ' redefine it with the next element...
         }  ' until it is None.
-        cur : ^Some : v
+        cur : ^Some:v
         !in
     }
 )
