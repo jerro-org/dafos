@@ -1,11 +1,6 @@
 ' Any data or object or type.
 *ANY : (
-    *Eq= {
-    }
-    *Neq<> {
-    }
-    *String {
-    }
+
 )
 
 ' Just a bunch of 'OBJ'.
@@ -13,6 +8,12 @@
 
 ' The base type for all data. May contain functions for the type itself as well, hence its a 'MOD'.
 *DATA : MOD (
+    *Eq= {
+    }
+    *Neq<> {
+    }
+    *String {
+    }
     *Size {} ' in bits
     *Length {} ' in bytes
 )
@@ -24,20 +25,38 @@
 *BITS8 : BITS:8
 ' ...
 
-' Can be a function or an stateful object.
-*OBJ : ANY {
+' Can be a function or a stateful object.
+*OBJ : {
 }
 
-' Dangerous object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
-' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
-' On an error, function outputs are set to the base value of its type.
-*EOBJ : OBJ {
-}
+' Pointer data type with restricted usage.
+' If T is OBJ
+*PTR^ : (
+    ?T
+    *Ref^_ : {  ' '^' before identifier: Keep/take reference. Operator cannot be overwritten.
+        ?d : T
+        !p : PTR:T
+    }
+    *Deref_^ : {  ' '^' after identifier: Dereference (a mutator, left side of ':'), operator cannot be overwritten.
+        ?p : PTR:T
+        !d : T
+    }
+)
 
-*CHECK : {
-    ?data
-    !result
-}
+' Treat type as data, e.g. for storing in generic type like any other data and get back the Type afterwards. There is no instance of the type involved in this.
+' It is actually just a conversion between lower case and upper case identifier.
+' If T is OBJ
+*TYPE& : (
+    ?T
+    *Datify_& : {
+        ?T
+        !t : TYPE
+    }
+    *Typify_& : {
+        ?t : TYPE
+        !T
+    }
+)
 
 ' FIXME Do we actually need it for data?)
 ' To get a handle of any (data or) object:
@@ -51,6 +70,18 @@
         !T
     }
 )
+
+' Dangerous object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
+' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
+' On an error, function outputs are set to the base value of its type.
+*EOBJ : OBJ {
+}
+
+*CHECK : {
+    ?data
+    !result
+}
+
 
 ' Array definition:
 '   matrix : ARRAY : NUM (3 3)
@@ -335,17 +366,6 @@ m.T
         .size : 32
     )
 )
-
-' Pointer data type with restricted usage.
-*PTR^ : (
-    ?T
-    *Ref^_ : {  ' Real pseudo definition. '^' before identifier, operator cannot be overwritten.
-    }
-    *Deref_^ : {  ' Real pseudo definition. '^' after identifier, operator cannot be overwritten.
-    }
-)
-' The pointer notation is also used to define a type parameter as the type itself, not its instance:
-' .listOfFunctions : List:OBJ
 
 ' DATA type that may do dynamic memory management using pointers.
 ' But pointers are always private to the DYNAMIC.

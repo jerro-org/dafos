@@ -1,13 +1,15 @@
 ' List is a 'DYNAMIC' data type. This means that it can contain DATA by reference, but none of this can be seen outside the List Module (and extensions of it).
 *List : DYNAMIC (
     ?T
-    ' Usually T is DATA then instance is used for _v could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
+    ' Usually T is DATA then instance is used for v.
+    ' If T is OBJ then we mean its type not its instance, which is the same for pure functions.
+    ' List-internally it is treated as DATA instance (identifier starts with small letter) even if T is a function.
     
     ' Private implementation:
     .Node (
         |None_  ' Neutral element 'operator' '_'. Used as default initialization.
         |Some (
-            *_v : T  ' '_' indicates that v might be instance of DATA (which would start with lower case letter) or a type of OBJ (which would start with upper case letter). 
+            *v : T  ' '_' indicates that v might be instance of DATA (which would start with lower case letter) or a type of OBJ (which would start with upper case letter). 
             *next : ^Element  ' A pointer that cannot be seen outside the list module. 'next' is used as any (non-pointer) field (copied by default).
         )        
     )
@@ -16,7 +18,6 @@
     ' non-mutating functions
     
     *RevMap {
-        .U  ' For completeness we define the free output type
         ?in
         ?F : {
             ?i : T
@@ -24,9 +25,9 @@
         }
         out : List:U  ' Define 'out' as a list that is 'None' (implemented as null pointer). Keep it as the beginning of the list.
         cur : in.first
-        { node : Some  ' As long as node is 'Some' (not 'None')...
+        { cur : Some  ' As long as node is 'Some' (not 'None')...
             out.first : Node : F:cur.v out.first
-            cur : node.next
+            cur : cur.next
         }
         !out
     }
@@ -68,3 +69,17 @@
         !in
     }
 )
+
+'(
+    .F : {
+        ?a : NUM
+        ?b : NUM
+        !c : NUM
+    }
+    List of functions of prototype:
+    list : List:&F
+    list : List:&F.Prepend : &F1 list
+    list : List:&F.Prepend : &F2 list
+    FirstFunction& : List:&F.First : list
+    z : FirstFunction : x y
+)'
