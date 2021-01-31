@@ -28,7 +28,7 @@
 *OBJ : ANY {
 }
 
-' Dangerous object that can register an error. Errors are passed along the syntax tree as long as unchecked.
+' Dangerous object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
 ' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
 ' On an error, function outputs are set to the base value of its type.
 *EOBJ : OBJ {
@@ -40,9 +40,11 @@
 }
 
 ' FIXME Do we actually need it for data?)
-' To get a handle of any data or object:
+' To get a handle of any (data or) object:
 '   o : .obj
-*HANDLE : DATA (
+' This is also possible, before the object is defined to access properties of the object that are known, before.
+' Eg. type of object and (RT-)connection properties (sample rate, etc.).
+*HANDLE. : DATA (
     ?T
     *Type {
         ?h
@@ -342,6 +344,8 @@ m.T
     *Deref_^ : {  ' Real pseudo definition. '^' after identifier, operator cannot be overwritten.
     }
 )
+' The pointer notation is also used to define a type parameter as the type itself, not its instance:
+' .listOfFunctions : List:OBJ
 
 ' DATA type that may do dynamic memory management using pointers.
 ' But pointers are always private to the DYNAMIC.

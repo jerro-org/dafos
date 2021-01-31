@@ -1,12 +1,13 @@
 ' List is a 'DYNAMIC' data type. This means that it can contain DATA by reference, but none of this can be seen outside the List Module (and extensions of it).
 *List : DYNAMIC (
     ?T
+    ' Usually T is DATA then instance is used for _v could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
     
     ' Private implementation:
     .Node (
         |None_  ' Neutral element 'operator' '_'. Used as default initialization.
         |Some (
-            *v : T  ' T could be of Data or Type/Function (but not an Object). List-internally it can be treated as DATA (identifier starts with small letter) even if T is a function.
+            *_v : T  ' '_' indicates that v might be instance of DATA (which would start with lower case letter) or a type of OBJ (which would start with upper case letter). 
             *next : ^Element  ' A pointer that cannot be seen outside the list module. 'next' is used as any (non-pointer) field (copied by default).
         )        
     )
@@ -15,8 +16,9 @@
     ' non-mutating functions
     
     *RevMap {
+        .U  ' For completeness we define the free output type
         ?in
-        ?F {
+        ?F : {
             ?i : T
             !o : U
         }
@@ -38,7 +40,7 @@
 
     *Map {
         ?in
-        ?F {
+        ?F : {
             ?i : T
             !o : U
         }

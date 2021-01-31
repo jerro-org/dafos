@@ -1,0 +1,26 @@
+*DIR : DOMAIN (
+    ?TKey
+    ?TInfo
+
+    ' Concrete implementation of domain.
+    *Domain : {
+        .this : DIR
+
+        *active {
+            *Register [
+                ?key : TKey
+                ?info : TInfo
+                ?d : DOMAIN
+            ]
+        }
+    }
+
+    *Root : {
+        !root : DIR
+    }
+)
+
+('
+.StrDir : DIR : STRING DATA  ' Directory with STRING keys and empty info. (DATA taken as a concrete type means empty.)
+newDirectory : StrDir.Create
+)'

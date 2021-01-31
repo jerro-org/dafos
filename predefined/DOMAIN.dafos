@@ -8,8 +8,8 @@
     *Revision : ()
 
     ' Prototype for domains.
-    *Domain : {
-        .this : DomainHandle
+    *Domain : BASE {
+        .this : DOMAIN
         *revision : Revision
         .storedData : StoredData (  ' Type for this is automatically generated.
             *revision : Revision
@@ -21,7 +21,7 @@
         ]
     }
     
-    ' Gereic domain parameter 
+    ' Generic domain parameter
     ?T : Domain
 
     ' Union for the DOMAIN handle
@@ -40,6 +40,10 @@
     |None : HandleError
     |Shared : ^T
     |Exclusive : ^T
+
+    *Create : {
+        ! d : DOMAIN
+    }
 
     *Activate : {
         ?d : DOMAIN
@@ -73,10 +77,6 @@
     ' Write all data including buffered blocks to disk.
     ' Done automatically when deactivating. Used only to persist important data in a long running domain.
     *Sync {}
-
-    *Root {
-        !root : DOMAIN
-    }
 )
 
 ' Domain instances in contrast to instances of other functions can be passed around as references.
@@ -97,7 +97,7 @@
         | anotherSubDomain : DOMAIN:Shared
             ' No exclusive access so we are not allowed to connect but to allocate an accessor.
             .reader : anotherSubDomain.instance.active.Reader
-        | anotherSubDomainHandle : DOMAIN:None  ' Errors
+        | anotherSubDomain : DOMAIN:None  ' Errors
             ' ...
         )
     }
