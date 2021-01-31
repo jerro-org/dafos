@@ -2,6 +2,8 @@
 ' Always the whole domain - except BLOX.Block instances within the domain, which are explicitly fetched - is loaded into memory when the domain is active.
 ' Hence it must be kept small enough.
 ' Serialization is done by system.
+' The DOMAIN data/module itself stands for the generic domain handle.
+' DOMAIN.Domain serves as prototye for domaein object types.
 *DOMAIN : (
     *Revision : ()
 
@@ -19,7 +21,7 @@
         ]
     }
     
-    'Domain may 
+    ' Gereic domain parameter 
     ?T : Domain
 
     ' Union for the DOMAIN handle
@@ -36,26 +38,22 @@
         *reason : Reason
     )
     |None : HandleError
-    *Ptr^ : (  ' DOMAIN.Ptr looks like a dafos PTR but follows different rules.
-        ?T : Domain  ' It is only for domains, assignment means assignment of referece no deep copy.
-    )
     |Shared : ^T
     |Exclusive : ^T
 
-
     *Activate : {
-        ?d : Handle
+        ?d : DOMAIN
     }
 
     *Deactivate : {
-        ?d : Handle
+        ?d : DOMAIN
     }
 
     *Info : (
         .level : UINT32
     )
     *GetInfo {
-        ?h : Handle
+        ?h : DOMAIN
         !info : Info
     }
 
@@ -64,7 +62,7 @@
         |Active
     )
     *GetStatus {
-        ?h : Handle
+        ?h : DOMAIN
         !status : Status
     }
 
@@ -92,16 +90,14 @@
     .active {
         .fileTemp : FileDomain:BITS8  ' Temporary file, not even persisted  after MyDomain deactivation because it is not seen outside of 'active'. 
 
-        anotherSubDomainHandle : GetDomain : DIR.Root somePath
-        ( anotherSubDomainHandle : DOMAIN.Exclusive:MyModelDomain
+        anotherSubDomain : GetDomainOfType : DIR.Root somePath MyModelDomain
+        ( anotherSubDomain : DOMAIN.Exclusive
             ' Allowed to access including connecting ports, because we have got an exclusive handle.
-            outputs : anotherSubDomainHandle.instance.active^ : inputs
-        | anotherSubDomainHandle : DOMAIN.Shared:MyModelDomain
+            outputs : anotherSubDomain.instance.active : inputs
+        | anotherSubDomain : DOMAIN:Shared
             ' No exclusive access so we are not allowed to connect but to allocate an accessor.
-            .reader : anotherSubDomainHandle.instance^.active.Reader
+            .reader : anotherSubDomain.instance.active.Reader
         | anotherSubDomainHandle : DOMAIN:None  ' Errors
-            ' ...
-        | anotherSubDomainHandle : DOMAIN  ' Error: it is shared or exclusive but the domain does not have the expected type.
             ' ...
         )
     }
