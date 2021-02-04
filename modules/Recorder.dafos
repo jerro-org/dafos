@@ -1,0 +1,11 @@
+*Recorder : {
+    .Element : (
+        *start
+        *len
+        *file
+        *offset
+    )
+    .Track : List:Element
+    tracks : Vector:Track
+    
+}

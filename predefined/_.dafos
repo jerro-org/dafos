@@ -18,9 +18,15 @@
     *Length {} ' in bytes
 )
 
-' Convertable to all other data with same size except.
+' Convertable to all other data with same size except PTR, TYPE, ...
 *BITS : DATA (
     ?n : UINT
+    *Shift<<
+    *Rotate<<<
+    *And&
+    *Or&
+    *Not~
+    *Xor^
 )
 *BITS8 : BITS:8
 ' ...
@@ -48,7 +54,7 @@
 ' If T is OBJ
 *TYPE& : (
     ?T
-    *Datify_& : {
+    *Datify&_ : {
         ?T
         !t : TYPE
     }
@@ -57,6 +63,21 @@
         !T
     }
 )
+'( example usage of datify/typify
+    .F : {
+        ?a : NUM
+        ?b : NUM
+        !c : NUM
+    }
+    List of functions of prototype:
+    list : List:&F
+    list : List.Prepend : &NUM.Add list
+    list : List.Prepend : &NUM.Sub list
+    firstFunction : List.First:list
+    FirstFunction : firstFunction&
+    FirstFunction : List.First:list&
+    z : FirstFunction : x y
+)'
 
 ' FIXME Do we actually need it for data?)
 ' To get a handle of any (data or) object:
@@ -112,6 +133,10 @@
         ?b
         ?c
     }
+    *Resize : {
+        ?in : ARRAY:x
+
+    }
 )
 
 *STRING : (
@@ -153,10 +178,6 @@ m.T
     { e : oldArr@i@j; f : newArr@i@j
         f : e + 1
     }
-
-    ' line breaking
-    signal : Fun1 : Fun2 : Fun3 
-    : Fun4 :
 }
 )'
 
@@ -164,11 +185,10 @@ m.T
     |True
     |False
 
-    *And&& : {}
-    
-    *Or|| : {}
-    
-    *Xor^^ : {} ' Same as NEQ<> but less binding.
+    *And& : {}
+    *Or| : {}
+    *Not~ :{}
+    *Xor^ : {} ' Same as NEQ<> but less binding.
 )
 
 ' NUM is a generic number.
@@ -192,8 +212,11 @@ m.T
         *size : UINT ' stored size
     )
 
-    ' Result will have the fixed size of the input with the bigger range.
-    ' If one of the inputs has 
+    ' The result of the operators will have the data type of the module from which it is used.
+    ' If not given explicitly: The output type is set from the connected input.
+    ' If not given and inputs are the same type, output type is input type
+    ' If not specified this will be the fixed size of the input with the bigger range.
+    ' If taken form NUM module, output size is dynamically determined.
     ' Wrapping for integers, saturating for floats (+-infinity).
     *Add+ : {
         ?a
@@ -202,38 +225,14 @@ m.T
     }
     *Sub- : {
     }
-
-    ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
-    ' Not allowed for not statically defined or statically different denominators.
-    *AddExt++ : {
-        ?a
-        ?b
-        !c
-    }
-    *SubExt-- : { ' The carry bit is part of the result. The result grows or shrinks dynamically with the needed size.
-        ?a
-        ?b
-        !c
-    }
-
-    ' Result will have the fixed size of the input with the bigger range.
     *Mul* : {
-
     }
-    ' The results numerator size is the sum of the input numerator sizes.
-    *MulExt** : { 
-
-    }
-
-    ' Result will have the fixed size of the input with the bigger range.
     *Div/ : EOBJ {
     }
     *Rem\ : EOBJ {
     }
-    ' 
-    *DivExt// : EOBJ {
-    }
 
+    ' For NUMs with exponent: no shift, exponent is incremented. 
     ' out = in * 2^n
     *Shift<< : {
     }
@@ -357,13 +356,16 @@ m.T
 
     }
 
+    '( Can be defined in SetExt if needed, using BITS operations.
     *Shift<< {
         ?in
         ?n
         !out
     }
     *Rotate<<< {
-    }
+    }        
+    )'
+
 )
 *SET8
 *SET16

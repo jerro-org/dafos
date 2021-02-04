@@ -359,7 +359,7 @@ list : Start : 1 2 3 list
 }
 
 *MyUi : Ui.Domain {
-    Ui.Vidgets  ' import view gadgets (=vidgets)
+    @Ui.Vidgets  ' import view gadgets (=vidgets)
     .mainVidget : ResizeKdt  ' from Ui.Vidgets
     *active {
         *control {

@@ -20,8 +20,8 @@
     *RevMap {
         ?in
         ?F : {
-            ?i : T
-            !o : U
+            ?i : ?T
+            !o : ?U
         }
         out : List:U  ' Define 'out' as a list that is 'None' (implemented as null pointer). Keep it as the beginning of the list.
         cur : in.first
@@ -69,17 +69,3 @@
         !in
     }
 )
-
-'(
-    .F : {
-        ?a : NUM
-        ?b : NUM
-        !c : NUM
-    }
-    List of functions of prototype:
-    list : List:&F
-    list : List:&F.Prepend : &F1 list
-    list : List:&F.Prepend : &F2 list
-    FirstFunction& : List:&F.First : list
-    z : FirstFunction : x y
-)'

@@ -1,11 +1,23 @@
 ' Signal processing.
 ' Types and functions for processing of time discrete signals.
 
-*Sp (
-    ?Sample
-    * Rate (
-        |None
-        |Rational64
-    )
-)
+*Audio : FLOAT32 (
+    *Coeff : 
+    *Accu : FLOAT32
 
+    *Mac
+    *MixerMatrix : {
+        ?m : UINT32
+        ?n : UINT32
+        .goto : m#n#Interpolator
+
+        *audio : RT {
+            *par : {
+                goto@?i@?j.Set : ?v
+            }
+            goto.Get
+            ?in : m#Audio
+            !out : n#Audio : Accu.Sum : goto.Get * in
+        }
+    }
+)
