@@ -18,7 +18,7 @@
     *Length {} ' in bytes
 )
 
-' Convertable to all other data with same size.
+' Convertable to all other data with same size except.
 *BITS : DATA (
     ?n : UINT
 )
@@ -282,9 +282,7 @@ m.T
 *INT8
 *INT16
 *INT32 : INT (
-    .numerator (
-        .size : 32
-    )
+    .numerator.size : 32
 )
 *INT64
 *UINT
@@ -293,10 +291,21 @@ m.T
 *UINT32
 *UINT64
 *UINT128
-*FLOAT : NUM (.denominator : 1)
-*FLOAT16 : FLOAT (.numerator.size: 11; .exponent.size: 5)
-*FLOAT32 : FLOAT (.numerator.size: 24; .exponetn.size: 8)
-*FLOAT64 : FLOAT (.numerator.size: 53; .exponent.size: 11)
+*FLOAT : NUM (
+    .denominator : 1
+)
+*FLOAT16 : FLOAT (
+    .numerator.size : 11
+    .exponent.size : 5
+)
+*FLOAT32 : FLOAT (
+    .numerator.size : 24
+    .exponetn.size: 8
+)
+*FLOAT64 : FLOAT (
+    .numerator.size: 53
+    .exponent.size: 11
+)
 *FLOAT128
 *FIX
 *FIX8
@@ -307,8 +316,13 @@ m.T
 *UFIX8
 *UFIX16
 *UFIX64
-*RATIONAL : NUM (.exponent : 0)
-*RATIONAL16 : RATIONAL (.numerator.size : 8; denominator.size : 8)
+*RATIONAL : NUM (
+    .exponent : 0
+)
+*RATIONAL16 : RATIONAL (
+    .numerator.size : 8
+    denominator.size : 8
+)
 *RATIONAL32
 *RATIONAL64
 *RATIONAL128
