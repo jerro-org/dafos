@@ -103,7 +103,6 @@
     !result
 }
 
-
 ' Array definition:
 '   matrix : ARRAY : NUM (3 3)
 ' with shortcut

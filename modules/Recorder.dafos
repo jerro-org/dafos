@@ -7,5 +7,19 @@
     )
     .Track : List:Element
     tracks : Vector:Track
+
+    *Track : {  ' Embedded types can read (but not write) signals of surrounding instance.
+        ?SampleT
+        ?ControlT
+        *start : {
+            ?rec : BOOL
+            ?timestamp
+        }
+        *
+    }
+}
+
+' Extending object embedded type?
+*AudioTrack : Recorder.Track {
     
 }

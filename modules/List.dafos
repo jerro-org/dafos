@@ -42,8 +42,8 @@
     *Map {
         ?in
         ?F : {
-            ?i : T
-            !o : U
+            ?i : ?T
+            !o : ?U
         }
         out : List:U 
         curOut : ^^out.first  ' Assign a mutator, making out.first reference field mutable.

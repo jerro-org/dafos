@@ -1,23 +1,81 @@
 ' Signal processing.
 ' Types and functions for processing of time discrete signals.
 
-*Audio : FLOAT32 (
-    *Coeff : 
-    *Accu : FLOAT32
+*Audio : (
+    *Smp : NUM
+    *Acc : NUM (
+        *Sum : {
+            ?in : ?n#Acc
+            
+        }
+    )
+    
+    *Mac : {
+        ?a : ?n#Smp
+        ?b : ?n#Sample
+        !c : Smp.SatRound : Acc.Sum : a*b
+    }
 
-    *Mac
+    *Interpolator : {
+        *to : (
+            vIs : Audio : 0
+            ?vSet : Audio
+            ?ramp : (
+                |Inc : FLOAT32
+                |NSmps : UINT32
+            )
+            ( ramp : Inc
+                inc : ramp
+            | ramp : NSmps
+                inc : vSet-vIs / ramp
+            )
+            vIs : vIs+inc
+            [ inc>0 & vIs>vSet
+            | inc<0 & vIs<vSet
+                vIs : vSet
+                inc : 0
+            ]
+            *get : {
+                !vIs
+            }
+        )
+    }
+
     *MixerMatrix : {
         ?m : UINT32
         ?n : UINT32
-        .goto : m#n#Interpolator
+        .go : m#n#Interpolator
 
         *audio : RT {
-            *par : {
-                goto@?i@?j.Set : ?v
-            }
-            goto.Get
+            *par : m#n#[
+                go.to : ?v ?t
+            ]
             ?in : m#Audio
-            !out : n#Audio : Accu.Sum : goto.Get * in
+            !out : n#Audio : Mac : go.to.get in
         }
     }
+)
+
+*Slider : {
+    *output : [  ' Either executed if the connected port pulls (e.g. on initialization)...
+    | onChange   ' ... or if the slider has changed
+        !v : FLOAT32
+    ]
+}
+
+mixerMatrix.audio.par : 
+
+
+*AudioFloat32 : Audio (
+    *Smp : FLOAT32
+    *Acc : FLOAT32
+)
+
+*AudioFix32 : Audio (
+    *Smp : FIX32 (
+        .exponent : -24
+    )
+    *Acc : FIX64 (
+        .exponent : -48
+    )
 )
