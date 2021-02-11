@@ -1,0 +1,77 @@
+*Geom2D : (
+    *Line : (
+        *x : FLOAT32
+        *y : FLOAT32
+        *dx : FLOAT32
+        *dy : FLOAT32
+    )
+)
+
+*Polygon : (
+
+)
+*ScanLines : (
+    ?height : UINT32
+    .Line : List:Pixel
+    .lines : height#Line
+
+    *AddPolygon : {
+        ?scanLines
+        ?polygon
+        ?color
+        !scanLines
+    }
+
+    *Fill : {
+        ?
+    }
+
+)
+
+*PictureRgba : (
+    *RenderPolygon : {
+
+    }
+    *ScanLineRenderer : {
+        ?outRegion
+        !inRegion
+        *do : {
+            ?in : ScanLines
+            !out
+        }
+    }
+    *Rescale : {
+        ?outRegion
+        !inRegion : 
+        *do : {
+            ?in
+            { o : out@y@x
+                inX inY : s*(x y)
+                { i : (in @ inX..r @ inY..r) @ xf @ yf
+                    // ...
+                }
+                // ...
+            }
+            !out            
+        }
+    }
+)
+
+'(
+    .renderer : ScanLineRenderer
+    .rescaler : Rescaler
+    .blur : BlurFilter
+
+    outRegion : ...
+    inRegion : renderer : rescaler : blur : outRegion
+
+    {
+        out : blur.do : rescale.do : render.do : in
+    }
+
+' FIXME How to automatically split large picture signalprocessing to parallel instances.
+'   Design the IOs to be split already according to hardware design.
+'   On PC, this might be one region, on other hardware outputs might be split
+'   What when passing data between differently scaled hardware.
+'   Always allow splitting somehow and use the region size of the smaller hardware (input hardware - output hardware).
+)'
