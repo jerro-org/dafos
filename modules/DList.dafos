@@ -2,7 +2,7 @@
 ' This has heavily mutable character. Therefore the compiler needs to copy input of functions if the original is still needed after.
 *DList : DYNAMIC (
     ?T
-    .Node (
+    .Node : (
         *next : ^Node
         *prev : ^Node
         *v : Option:T  ' This is None only for s (the sentinel).

@@ -6,36 +6,37 @@
     ' List-internally it is treated as DATA instance (identifier starts with small letter) even if T is a function.
     
     ' Private implementation:
-    .Node (
-        |None_  ' Neutral element 'operator' '_'. Used as default initialization.
-        |Some (
-            *v : T  ' '_' indicates that v might be instance of DATA (which would start with lower case letter) or a type of OBJ (which would start with upper case letter). 
-            *next : ^Element  ' A pointer that cannot be seen outside the list module. 'next' is used as any (non-pointer) field (copied by default).
+    .Node : (
+        |None  ' First choice used as default initialization.
+        |Some : (
+            *v : T
+            *next : ^Node  ' A pointer that cannot be seen outside the list module. 'next' is used as any (non-pointer) field (copied by default).
         )        
     )
     .first : ^Node
 
+    ' All funtions that potentially allocate new nodes are are EOBJ: Allocate may fail 
     ' non-mutating functions
     
-    *RevMap {
+    *RevMap : EOBJ {
         ?in
         ?F : {
             ?i : ?T
             !o : ?U
         }
-        out : List:U  ' Define 'out' as a list that is 'None' (implemented as null pointer). Keep it as the beginning of the list.
-        cur : in.first
-        { cur : Some  ' As long as node is 'Some' (not 'None')...
-            out.first : Node : F:cur.v out.first
+        out : List:U  ' Define 'out' as a list.
+        cur : in.first ' The first element defaults to 'None' (implemented as null pointer). Keep it as the beginning of the list.
+        { cur : Node.Some  ' As long as node is 'Some' (not 'None')...
+            out.first : ^Node.Some : F:cur.v out.first
             cur : cur.next
         }
         !out
     }
 
-    *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
+    *Prepend : EOBJ {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
         ?in
         ?v : T
-        out.first : Some v in.first
+        out.first : ^Node.Some : v in.first
         !out
     }
 

@@ -36,7 +36,7 @@
 }
 
 ' Pointer data type with restricted usage.
-' If T is OBJ
+' Construction can fail. So, as for an EOBJ also for 'd : ^T : ...', d can have an error that needs to be checked.
 *PTR^ : (
     ?T
     *Ref^_ : {  ' '^' before identifier: Keep/take reference. Operator cannot be overwritten.
@@ -92,7 +92,7 @@
     }
 )
 
-' Dangerous object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
+' Dangerous function/object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
 ' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
 ' On an error, function outputs are set to the base value of its type.
 *EOBJ : OBJ {
