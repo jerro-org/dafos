@@ -11,21 +11,21 @@
 
 )
 *ScanLines : (
+    *Fade : (
+        |In
+        |Out
+        |Cross
+    )
     ?height : UINT32
-    .Line : List:Pixel
+    .Line : List:Op
     .lines : height#Line
 
-    *AddPolygon : {
+    *AddLine : {
         ?scanLines
-        ?polygon
+        ?line
         ?color
         !scanLines
     }
-
-    *Fill : {
-        ?
-    }
-
 )
 
 *PictureRgba : (
