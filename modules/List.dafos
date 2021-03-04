@@ -15,10 +15,11 @@
     )
     .first : ^Node
 
-    ' All funtions that potentially allocate new nodes are are EOBJ: Allocate may fail 
+    ' All funtions that potentially allocate new nodes may set an error on their output: Allocate may fail.
+
     ' non-mutating functions
     
-    *RevMap : EOBJ {
+    *RevMap {
         ?in
         ?F : {
             ?i : ?T
@@ -30,10 +31,11 @@
             out.first : ^Node.Some : F:cur.v out.first
             cur : cur.next
         }
+        [ out : ERROR : Ptr.Error.CouldNotAllocate ]
         !out
     }
 
-    *Prepend : EOBJ {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
+    *Prepend {  ' Note that Prepend does not mutate the input list, so the compiler should see, there is no need to copy it.
         ?in
         ?v : T
         out.first : ^Node.Some : v in.first
@@ -49,9 +51,9 @@
         out : List:U 
         curOut : ^^out.first  ' Assign a mutator, making out.first reference field mutable.
         curIn : in.first  ' Up to the compiler to treat this as a reference or not. We just read from in, so logic is the same.
-        { curIn : Some  ' As long as in is a 'Node' (not 'None')...
+        { curIn : Node.Some  ' As long as in is a 'Node' (not 'None')...
             curOut^ : ^Some:F:in.v  ' ... make a new 'Node' that replaces 'None' (mutate)...
-            curOut : ^^curOut.next  ' ... redefine cur to reference next, making it mutable.
+            curOut : ^^curOut.next  ' ... redefine curOut to reference next, making it mutable.
             curIn : curIn.next
         }
         !out

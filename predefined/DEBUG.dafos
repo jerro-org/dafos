@@ -1,0 +1,16 @@
+*DEBUG (
+    ' FIXME What happens here?
+    *Assert : {
+        ?c : BOOL
+    }
+
+    *AssertNoError : {
+        
+    }
+
+    ' Global logger.
+    *Log : {
+        ?level
+        ?d : DATA
+    }
+)

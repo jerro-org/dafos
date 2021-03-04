@@ -1,13 +1,9 @@
-' Any data or object or type.
-*ANY : (
-
-)
-
-' Just a bunch of 'OBJ'.
-*MOD : ()
-
 ' The base type for all data. May contain functions for the type itself as well, hence its a 'MOD'.
-*DATA : MOD (
+*DATA : (
+
+    ' Union of potential errors for this type. Errors can be defined in extensions of DATA.
+    *Error : ()
+
     *Eq= {
     }
     *Neq<> {
@@ -17,6 +13,27 @@
     *Size {} ' in bits
     *Length {} ' in bytes
 )
+
+' Can be a function or a stateful object.
+*OBJ : {
+}
+
+' Functions/objects can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
+' If a function may set an error on an output this is indicated in the interface/prototype of the function.
+' Functions that do not check potentially errored outputs will have potentially errored outputs themselves indicated in their interface again.
+' On an error, function outputs are set to the base value of its type.
+*ERROR : {
+    ?d : DATA
+    !r : DATA.Error
+    !d : DATA
+}
+
+' Check data for errors that have been collected along the syntax tree.
+' This resolves the error so it does not appear anymore in the using fuction.
+*CHECK : {
+    ?d : DATA
+    !e : #DATA.Error
+}
 
 ' Convertable to all other data with same size except PTR, TYPE, ...
 *BITS : DATA (
@@ -28,17 +45,18 @@
     *Not~
     *Xor^
 )
-*BITS8 : BITS:8
+*BYTE : BITS:8
+*WORD16 : BITS:16
+*WORD32 : BITS:32
+*WORD64 : BITS:64
 ' ...
 
-' Can be a function or a stateful object.
-*OBJ : {
-}
-
 ' Pointer data type with restricted usage.
-' Construction can fail. So, as for an EOBJ also for 'd : ^T : ...', d can have an error that needs to be checked.
 *PTR^ : (
     ?T
+    *Error : (
+        |CouldNotAllocate ' Construction can fail.
+    )
     *Ref^_ : {  ' '^' before identifier: Keep/take reference. Operator cannot be overwritten.
         ?d : T
         !p : PTR:T
@@ -49,7 +67,8 @@
     }
 )
 
-' Treat type as data, e.g. for storing in generic type like any other data and get back the Type afterwards. There is no instance of the type involved in this.
+' Treat type as data, e.g. for storing in generic type like any other data and get back the Type afterwards.
+' There is no instance of the type involved in this.
 ' It is actually just a conversion between lower case and upper case identifier.
 ' If T is OBJ
 *TYPE& : (
@@ -92,9 +111,6 @@
     }
 )
 
-' Dangerous function/object that can register errors for its outputs. Errors are passed along the syntax tree as long as unchecked.
-' Functions that do not check all there dangerous outputs must be defined as dangerous themselves.
-' On an error, function outputs are set to the base value of its type.
 *EOBJ : OBJ {
 }
 
@@ -111,9 +127,15 @@
     ?T
     ?size : d#UINT
 
+    *Error : (
+        |GetOutOfRange
+        |SetOutOfRange
+    )
+
     *Get@ : EOBJ {
         ?array
         ?at
+        [ value : ERROR : value Error.GetOutOfRange ]
         !value : T  ' On error value is T's base value.
     }
     ' The set operator is a shortcut to make
@@ -125,6 +147,7 @@
         ?array
         ?index : d#UINT
         ?element : T
+        [ array : ERROR : value Error.SetOutOfRange ]
         !array
     }
     *Concat, : {
@@ -134,7 +157,6 @@
     }
     *Resize : {
         ?in : ARRAY:x
-
     }
 )
 
