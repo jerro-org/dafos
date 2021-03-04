@@ -12,11 +12,16 @@
     .s : Node : s s Option.None
 
     *PushBack {
-        ?in
+        ?
         ?e : T
-        new : ^Node : s s.prev e  ' FIXME might set error, what happens to the signal?
-        s.prev.next : ^new  ' Reference mutation
-        s.prev : ^new
+        new : ^Node : s s.prev e  ' This might set an error. 'new' is no op in that case.
+        s.prev.next : ^new  ' Reference mutation. (If no op, s.prev.next stays the same.)
+        s.prev : ^new  ' (If no op s.prev stays the same. So output is the same as input.)
+        '( Interface will show because out is not checked here:
+        [
+            ERROR : Ptr.Error.CouldNotAllocate
+        ]
+        )'
         !
     }
     *PopBack {

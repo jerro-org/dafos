@@ -55,7 +55,10 @@
 *PTR^ : (
     ?T
     *Error : (
-        |CouldNotAllocate ' Construction can fail.
+        ' Construction can fail. If so the default value of the pointer is 'no operatration'.
+        ' This means expressions with the kept reference as input will not be executed.
+        ' Dereferencing will result in default of the value.
+        |CouldNotAllocate
     )
     *Ref^_ : {  ' '^' before identifier: Keep/take reference. Operator cannot be overwritten.
         ?d : T

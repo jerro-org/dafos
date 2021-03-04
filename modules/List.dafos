@@ -31,7 +31,11 @@
             out.first : ^Node.Some : F:cur.v out.first
             cur : cur.next
         }
-        [ out : ERROR : Ptr.Error.CouldNotAllocate ]
+        '( Interface will show because out is not checked here:
+        [
+            out : ERROR : Ptr.Error.CouldNotAllocate
+        ]
+        )'
         !out
     }
 
